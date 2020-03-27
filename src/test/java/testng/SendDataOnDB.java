@@ -8,7 +8,8 @@ import okhttp3.*;
 import java.io.IOException;
 import java.nio.file.*;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.*;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 
 
@@ -16,7 +17,7 @@ public class SendDataOnDB {
 
     TestngWatcher testngWatcher=new TestngWatcher();
     //public static String URL="http://v2.tesbo.io:7000";
-    public static String URL="http://localhost:7000/";
+    public static String URL="http://localhost:7000";
     public static String buildID;
 
     @Parameter(names={"--userKey", "-u"})
@@ -52,7 +53,6 @@ public class SendDataOnDB {
         OkHttpClient client = new OkHttpClient().newBuilder()
                 .build();
         MediaType mediaType = MediaType.parse("application/json");
-        System.out.println("+++++++++++++++++++++++++++>>>>>>  "+ "{\n\t\"buildName\": \""+buildName+"\",\n\t\"projectID\" : \""+projectKey+"\",\n\t\"userID\" : \""+userKey+"\"\n}");
         RequestBody body = RequestBody.create(mediaType, "{\n\t\"buildName\": \""+buildName+"\",\n\t\"projectID\" : \""+projectKey+"\",\n\t\"userID\" : \""+userKey+"\"\n}");
         Request request = new Request.Builder()
                 .url(URL+"/createBuild")
@@ -65,11 +65,13 @@ public class SendDataOnDB {
             JSONParser parser = new JSONParser();
             JSONObject object = null;
             try {
+
                 object = (JSONObject) parser.parse(response.body().string());
                 if(object.get("errors")!= null){
                     throw new Exception(object.get("message").toString());
                 }
                 buildID = (object.get("buildID")).toString();
+                System.out.println("buildID: "+ buildID);
                 response.close();
             } catch (ParseException e) {
                 e.printStackTrace();
@@ -87,7 +89,10 @@ public class SendDataOnDB {
             ConvertXmlToJson convertXmlToJson=new ConvertXmlToJson();
             teatData = convertXmlToJson.convertXmlFileDataToJson(convertXmlToJson.readXmlFile(file));
             JSONParser parser = new JSONParser();
-            JSONObject testngData = (JSONObject) parser.parse(teatData);
+            JSONObject testngData = null;
+
+            testngData = (JSONObject) parser.parse(teatData);
+
 
             createBuild();
             createTests(new JSONObject(testngData));
@@ -105,9 +110,10 @@ public class SendDataOnDB {
             OkHttpClient client = new OkHttpClient().newBuilder()
                     .build();
             MediaType mediaType = MediaType.parse("application/json");
-            RequestBody body = RequestBody.create(mediaType, "{\n\t\"buildKey\": \""+buildID+"\",\n\t\"userKey\" : \""+userKey+"\",\n\t\"projectKey\":\""+projectKey+"\",\n\t\"testsList\":\""+testObject+"\",\n\t\"projectType\":\"TestNG\",\n\t\"buildName\":\""+buildName+"\"\n\t\n}");
+            RequestBody body = RequestBody.create(mediaType, "{\n\t\"buildKey\": \""+buildID+"\",\n\t\"userKey\" : \""+userKey+"\",\n\t\"projectKey\":\""+projectKey+"\",\n\t\"testsList\":"+testObject+",\n\t\"projectType\":\"TestNG\",\n\t\"buildName\":\""+buildName+"\"\n\t\n}");
+
             Request request = new Request.Builder()
-                    .url(URL+"/createTests")
+                    .url(URL+"/createTestNGTests")
                     .method("POST", body)
                     .addHeader("Content-Type", "application/json")
                     .build();
@@ -142,12 +148,7 @@ public class SendDataOnDB {
     public static void main(String[] arguments) throws Exception {
         SendDataOnDB sendDataOnDB=new SendDataOnDB();
 
-        System.out.println("======> arguments: "+ arguments.length);
-        for(String arg:arguments){
-            System.out.println("===> "+arg);
-        }
         sendDataOnDB.setArgument(arguments);
-
 
         if(!Files.exists(Paths.get(reportDirectory))){
             throw new NoSuchFieldException("Directory is not found on following path: "+reportDirectory);
