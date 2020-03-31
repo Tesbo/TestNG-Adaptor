@@ -55,7 +55,7 @@ public class SendDataOnDB {
         MediaType mediaType = MediaType.parse("application/json");
         RequestBody body = RequestBody.create(mediaType, "{\n\t\"buildName\": \""+buildName+"\",\n\t\"projectID\" : \""+projectKey+"\",\n\t\"userID\" : \""+userKey+"\"\n}");
         Request request = new Request.Builder()
-                .url(URL+"/createBuild")
+                .url(URL+"/createBuild/TestNG")
                 .method("POST", body)
                 .addHeader("Content-Type", "application/json")
                 .build();
@@ -84,6 +84,7 @@ public class SendDataOnDB {
     }
 
     public void addDataInDataBase(String file) throws Exception {
+
         if(testngWatcher.checkFileChanged(file)){
             String teatData;
             ConvertXmlToJson convertXmlToJson=new ConvertXmlToJson();
