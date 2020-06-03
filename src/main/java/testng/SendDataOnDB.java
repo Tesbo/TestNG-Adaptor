@@ -16,8 +16,8 @@ import org.json.simple.parser.ParseException;
 public class SendDataOnDB {
 
     TestngWatcher testngWatcher=new TestngWatcher();
-    //public static String URL="http://v2.tesbo.io:7000";
-    public static String URL="http://localhost:7000";
+    public static String URL="http://report.tesbo.io:443";
+    //public static String URL="http://localhost:7000";
     public static String buildID;
 
     @Parameter(names={"--userKey", "-u"})
