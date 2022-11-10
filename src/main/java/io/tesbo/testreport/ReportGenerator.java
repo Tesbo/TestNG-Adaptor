@@ -16,9 +16,10 @@ public class ReportGenerator {
 
          ReportBuilder builder = new ReportBuilder();
 
-        JSONObject a = builder.convertXmlToJSON(builder.readXmlFile("C:\\Users\\ViralPatel\\IdeaProjects\\testing\\test-output"));
+        JSONObject a = builder.convertXmlToJSON(builder.readXmlFile("/Users/viralpatel/Viral/Nevvontesting/test-output"));
 
 
+        System.out.println(a);
         ReportDataConvertor convertor = new ReportDataConvertor(a);
         convertor.PrepareFinalReport();
 
