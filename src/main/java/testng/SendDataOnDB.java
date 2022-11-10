@@ -7,14 +7,10 @@ import okhttp3.*;
 
 import java.io.IOException;
 import java.nio.file.*;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-
 
 
 public class SendDataOnDB {
-
+/*
     TestngWatcher testngWatcher=new TestngWatcher();
     public static String URL="http://report.tesbo.io:443";
     //public static String URL="http://localhost:7000";
@@ -159,5 +155,5 @@ public class SendDataOnDB {
             sendDataOnDB.addDataInDataBase(reportDirectory);
         }
     }
-
+*/
 }
