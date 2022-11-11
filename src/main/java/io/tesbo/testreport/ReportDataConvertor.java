@@ -89,11 +89,11 @@ public class ReportDataConvertor {
         object.put("duration-ms", getFinishedAt());
         object.put("name", getTestName(singleTestObject));
         object.put("failureMessage", getFailureMessage());
-        object.put("full-stacktrace", getStackTrace());
+        object.put("full-stacktrace", getStackTrace(testObject.toString()));
         object.put("screenshot", getScreenshot());
 
 
-        object.put("methods", getMethodArray((JSONObject) testObject));
+        object.put("methods", getMethodArray(testObject.toString()));
 
         return object;
     }
@@ -187,8 +187,24 @@ public class ReportDataConvertor {
         return "Android";
     }
 
-    public String getStackTrace() {
-        return "Android";
+    public String getStackTrace(String testObject) {
+
+String fullStackTrace = "";
+      if(getFinalTestResult(testObject).equalsIgnoreCase("FAIL"));
+        {
+             JSONArray methodList = getMethodArray(testObject);
+
+
+            net.minidev.json.JSONArray array =            JsonPath.parse(methodList.toString()).read("$.[*].exception.full-stacktrace");
+
+            JSONArray finalStackTracs = new JSONArray(array.toString());
+           fullStackTrace = finalStackTracs.get(0).toString();
+
+
+        }
+
+
+        return fullStackTrace;
     }
 
     public String getScreenshot() {
@@ -196,10 +212,11 @@ public class ReportDataConvertor {
     }
 
 
-    public JSONArray getMethodArray(JSONObject singleTestObject) {
-        JSONArray methodList = new JSONArray();
+    public JSONArray getMethodArray(String singleTestObject) {
 
+        net.minidev.json.JSONArray list = JsonPath.parse(singleTestObject).read("$.class.test-method");
 
+        JSONArray methodList = new JSONArray(list.toString());
         return methodList;
     }
 
@@ -207,13 +224,45 @@ public class ReportDataConvertor {
     public JSONObject getSingleMethodObject(Object testObject) {
         JSONObject methodObject = new JSONObject();
 
-        methodObject.put("is-config", "");
-        methodObject.put("name", "");
-        methodObject.put("status", "");
-        methodObject.put("started-at", "");
-        methodObject.put("duration-ms", "");
-        methodObject.put("finished-at", "");
+        methodObject.put("is-config", getIsConfig(methodObject.toString()));
+        methodObject.put("name", getMethodName(methodObject.toString()));
+        methodObject.put("status", getMethodStatus(methodObject.toString()));
+        methodObject.put("started-at", getMethodStartedAt(methodObject.toString()));
+        methodObject.put("duration-ms", getDurationAt(methodObject.toString()));
+        methodObject.put("finished-at", getMethodFinished(methodObject.toString()));
         return methodObject;
     }
+
+    public boolean getIsConfig(String methodObject)
+    {
+        return false;
+    }
+
+    public String getMethodName(String methodObject)
+    {
+        return "";
+    }
+
+    public String getMethodStatus(String methodObject)
+    {
+        return "";
+    }
+
+    public String getMethodStartedAt(String methodObject)
+    {
+        return "";
+    }
+
+    public String getMethodFinished(String methodObject)
+    {
+        return "";
+    }
+
+    public String getDurationAt(String methodObject)
+    {
+        return "";
+    }
+
+
 
 }
