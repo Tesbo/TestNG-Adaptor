@@ -12,9 +12,7 @@ public class ReportDataConvertor {
     JSONObject reportData;
 
     ReportDataConvertor(JSONObject reportData) {
-
         this.reportData = reportData;
-
     }
 
 
@@ -28,15 +26,11 @@ public class ReportDataConvertor {
         suite.put("name", getSuiteName());
         suite.put("finished-at", getFinishedAt());
         suite.put("duration-ms", getDuration());
-
         suite.put("tests", getAvailableTestList());
-
-
         report.put("suite", suite);
 
 
         System.out.println(report);
-
     }
 
     public String getStartedAt() {
@@ -68,15 +62,11 @@ public class ReportDataConvertor {
     public JSONArray getAvailableTestList() {
 
         JSONArray finalTestList = new JSONArray();
-
         JSONArray getOldList = getTestList();
 
         for (Object singleTest : getOldList) {
-
             finalTestList.put(getSingleTestObject(singleTest));
         }
-
-
         return finalTestList;
 
     }
@@ -85,9 +75,11 @@ public class ReportDataConvertor {
 
         JSONObject object = new JSONObject();
 
+        String singleTestObject = testObject.toString();
+
         object.put("testID", UUID.randomUUID().toString());
         object.put("moduleName", getModuleName());
-        object.put("final-test-status", getFinalTestResult());
+        object.put("final-test-status", getFinalTestResult(singleTestObject));
         object.put("platformName", getPlatForm());
         object.put("platformVersion", getPlatVersion());
         object.put("browser", getBrowser());
@@ -96,7 +88,7 @@ public class ReportDataConvertor {
         object.put("started-at", getTestStartedAt());
         object.put("finished-at", getFinishedAt());
         object.put("duration-ms", getFinishedAt());
-        object.put("name", getTestName());
+        object.put("name", getTestName(singleTestObject));
         object.put("failureMessage", getFailureMessage());
         object.put("full-stacktrace", getStackTrace());
         object.put("screenshot", getScreenshot());
@@ -107,7 +99,6 @@ public class ReportDataConvertor {
         return object;
     }
 
-
     /*For the Module name, we need to consider the folder name of the test or class name*/
     public String getModuleName() {
         String moduleName = "Temp";
@@ -115,8 +106,31 @@ public class ReportDataConvertor {
         return moduleName;
     }
 
-    public String getFinalTestResult() {
-        return "pass";
+
+    /**
+     * @param object
+     * @return final test result
+     */
+    public String getFinalTestResult(String object) {
+        net.minidev.json.JSONArray list = JsonPath.parse(object).read("$.class.test-method[*].status");
+        JSONArray testList = new JSONArray(list.toString());
+
+        String finalTestResult = "PASS";
+
+        boolean isFailAvailable = false;
+        for (Object singleMethodResult : testList) {
+
+            if (singleMethodResult.toString().equalsIgnoreCase("FAIL")) {
+                isFailAvailable = true;
+            }
+
+        }
+
+        if (isFailAvailable) {
+            finalTestResult = "FAIL";
+        }
+
+        return finalTestResult;
     }
 
     public String getPlatForm() {
@@ -151,8 +165,13 @@ public class ReportDataConvertor {
         return "Android";
     }
 
-    public String getTestName() {
-        return "Android";
+    public String getTestName(String object) {
+
+        String testName = JsonPath.parse(object).read("$.name");
+
+
+
+        return testName;
     }
 
     public String getFailureMessage() {
@@ -178,7 +197,6 @@ public class ReportDataConvertor {
 
     public JSONObject getSingleMethodObject(Object testObject) {
         JSONObject methodObject = new JSONObject();
-
 
         methodObject.put("is-config", "");
         methodObject.put("name", "");
