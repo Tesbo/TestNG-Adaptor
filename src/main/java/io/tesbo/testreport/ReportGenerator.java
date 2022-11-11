@@ -16,7 +16,11 @@ public class ReportGenerator {
 
          ReportBuilder builder = new ReportBuilder();
 
-        JSONObject a = builder.convertXmlToJSON(builder.readXmlFile("/Users/viralpatel/Viral/Nevvontesting/test-output"));
+
+         //  C:\Users\ViralPatel\IdeaProjects\testing\test-output
+        // /Users/viralpatel/Viral/Nevvontesting/test-output
+
+        JSONObject a = builder.convertXmlToJSON(builder.readXmlFile("C:\\Users\\ViralPatel\\IdeaProjects\\testing\\test-output"));
 
 
         System.out.println(a);

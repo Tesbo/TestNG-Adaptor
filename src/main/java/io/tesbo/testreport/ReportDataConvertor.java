@@ -1,5 +1,6 @@
 package io.tesbo.testreport;
 
+
 import com.jayway.jsonpath.JsonPath;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -21,14 +22,12 @@ public class ReportDataConvertor {
 
         JSONObject suite = new JSONObject();
 
-
         suite.put("started-at", getStartedAt());
         suite.put("name", getSuiteName());
         suite.put("finished-at", getFinishedAt());
         suite.put("duration-ms", getDuration());
         suite.put("tests", getAvailableTestList());
         report.put("suite", suite);
-
 
         System.out.println(report);
     }
@@ -78,14 +77,14 @@ public class ReportDataConvertor {
         String singleTestObject = testObject.toString();
 
         object.put("testID", UUID.randomUUID().toString());
-        object.put("moduleName", getModuleName());
+        object.put("moduleName", getModuleName(testObject.toString()));
         object.put("final-test-status", getFinalTestResult(singleTestObject));
         object.put("platformName", getPlatForm());
         object.put("platformVersion", getPlatVersion());
         object.put("browser", getBrowser());
         object.put("browserVersion", getBrowserVersion());
         object.put("deviceName", getDeviceName());
-        object.put("started-at", getTestStartedAt());
+        object.put("started-at", getTestStartedAt(testObject.toString()));
         object.put("finished-at", getFinishedAt());
         object.put("duration-ms", getFinishedAt());
         object.put("name", getTestName(singleTestObject));
@@ -100,10 +99,15 @@ public class ReportDataConvertor {
     }
 
     /*For the Module name, we need to consider the folder name of the test or class name*/
-    public String getModuleName() {
+    public String getModuleName(String object) {
         String moduleName = "Temp";
 
-        return moduleName;
+        String ClassName = JsonPath.parse(object).read("$.class.name");
+
+        String[] nameSplitList = ClassName.split("\\.");
+
+        String folderName = nameSplitList[nameSplitList.length-2];
+        return folderName;
     }
 
 
@@ -153,23 +157,30 @@ public class ReportDataConvertor {
         return "Android";
     }
 
-    public String getTestStartedAt() {
+    public String getTestStartedAt(String object) {
+
+
+        String testStartedAt = JsonPath.parse(object).read("$.started-at");
+
         return "Android";
     }
 
-    public String getTestFinishedAt() {
+    public String getTestFinishedAt(String object) {
+
+        String testFinishedAt = JsonPath.parse(object).read("$.finished-at");
+
+
         return "Android";
     }
 
-    public String getTestDuration() {
+    public String getTestDuration(String object) {
+        String testDuration = JsonPath.parse(object).read("$.duration-ms");
         return "Android";
     }
 
     public String getTestName(String object) {
 
         String testName = JsonPath.parse(object).read("$.name");
-
-
 
         return testName;
     }
