@@ -158,11 +158,9 @@ public class ReportDataConvertor {
     }
 
     public String getTestStartedAt(String object) {
-
-
         String testStartedAt = JsonPath.parse(object).read("$.started-at");
 
-        return "Android";
+        return testStartedAt;
     }
 
     public String getTestFinishedAt(String object) {
@@ -170,12 +168,12 @@ public class ReportDataConvertor {
         String testFinishedAt = JsonPath.parse(object).read("$.finished-at");
 
 
-        return "Android";
+        return testFinishedAt;
     }
 
     public String getTestDuration(String object) {
         String testDuration = JsonPath.parse(object).read("$.duration-ms");
-        return "Android";
+        return testDuration;
     }
 
     public String getTestName(String object) {
