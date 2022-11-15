@@ -4,8 +4,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.Tesbo</groupId>
-    <artifactId>testng-adaptor</artifactId>
-    <version>0.0.2</version>
+    <artifactId>TestReport-Adaptor</artifactId>
+    <version>0.0.3</version>
     <distributionManagement>
         <repository>
             <id>github</id>
@@ -37,7 +37,7 @@
                             <archive>
                                 <manifest>
                                     <mainClass>
-                                  testng.SendDataOnDB
+                                        testng.SendDataOnDB
                                     </mainClass>
                                 </manifest>
                             </archive>
@@ -86,12 +86,25 @@
             <version>1.2.0</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/com.diogonunes/JColor -->
+        <dependency>
+            <groupId>com.diogonunes</groupId>
+            <artifactId>JColor</artifactId>
+            <version>5.5.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
+            <version>4.10.0</version>
+        </dependency>
+
+
         <dependency>
             <groupId>com.jayway.jsonpath</groupId>
             <artifactId>json-path</artifactId>
             <version>2.7.0</version>
         </dependency>
-
         <dependency>
             <groupId>com.beust</groupId>
             <artifactId>jcommander</artifactId>
