@@ -9,27 +9,23 @@ import java.util.UUID;
 
 public class ReportDataConvertor {
 
-
     JSONObject reportData;
 
     ReportDataConvertor(JSONObject reportData) {
         this.reportData = reportData;
     }
 
-
-    public void PrepareFinalReport() {
+    public JSONObject PrepareFinalReport() {
         JSONObject report = new JSONObject();
-
         JSONObject suite = new JSONObject();
-
         suite.put("started-at", getStartedAt());
         suite.put("name", getSuiteName());
         suite.put("finished-at", getFinishedAt());
         suite.put("duration-ms", getDuration());
         suite.put("tests", getAvailableTestList());
-        report.put("suite", suite);
+        report.put("Suite", suite);
 
-        System.out.println(report);
+        return report;
     }
 
     public String getStartedAt() {
@@ -77,19 +73,19 @@ public class ReportDataConvertor {
         String singleTestObject = testObject.toString();
 
         object.put("testID", UUID.randomUUID().toString());
-        object.put("moduleName", getModuleName(testObject.toString()));
+        object.put("moduleName", getModuleName(singleTestObject));
         object.put("final-test-status", getFinalTestResult(singleTestObject));
         object.put("platformName", getPlatForm());
         object.put("platformVersion", getPlatVersion());
         object.put("browser", getBrowser());
         object.put("browserVersion", getBrowserVersion());
         object.put("deviceName", getDeviceName());
-        object.put("started-at", getTestStartedAt(testObject.toString()));
-        object.put("finished-at", getFinishedAt());
-        object.put("duration-ms", getFinishedAt());
+        object.put("started-at", getTestStartedAt(singleTestObject));
+        object.put("finished-at", getTestFinishedAt(singleTestObject));
+        object.put("duration-ms", getTestDuration(singleTestObject));
         object.put("name", getTestName(singleTestObject));
-        object.put("failureMessage", getFailureMessage());
-        object.put("full-stacktrace", getStackTrace(testObject.toString()));
+        object.put("failureMessage", getFailureMessage(singleTestObject));
+        object.put("full-stacktrace", getStackTrace(singleTestObject));
         object.put("screenshot", getScreenshot());
 
 
@@ -98,15 +94,15 @@ public class ReportDataConvertor {
         return object;
     }
 
-    /*For the Module name, we need to consider the folder name of the test or class name*/
+
     public String getModuleName(String object) {
-        String moduleName = "Temp";
+
 
         String ClassName = JsonPath.parse(object).read("$.class.name");
 
         String[] nameSplitList = ClassName.split("\\.");
 
-        String folderName = nameSplitList[nameSplitList.length-2];
+        String folderName = nameSplitList[nameSplitList.length - 2];
         return folderName;
     }
 
@@ -171,8 +167,8 @@ public class ReportDataConvertor {
         return testFinishedAt;
     }
 
-    public String getTestDuration(String object) {
-        String testDuration = JsonPath.parse(object).read("$.duration-ms");
+    public int getTestDuration(String object) {
+        int testDuration = JsonPath.parse(object).read("$.duration-ms");
         return testDuration;
     }
 
@@ -183,22 +179,63 @@ public class ReportDataConvertor {
         return testName;
     }
 
-    public String getFailureMessage() {
-        return "Android";
+
+    public String getFailureMessage(String testObject) {
+
+        String fullStackTrace = "";
+
+        if (getFinalTestResult(testObject).equalsIgnoreCase("FAIL")) {
+
+            net.minidev.json.JSONArray list = JsonPath.parse(testObject).read("$.class.test-method");
+
+
+            JSONArray methodList = new JSONArray(list);
+
+
+            for (Object singleMethodResult : methodList) {
+                try {
+                    fullStackTrace = JsonPath.parse(singleMethodResult.toString()).read("$.exception.message");
+
+                    if (!fullStackTrace.equalsIgnoreCase("")) {
+                        break;
+                    }
+                } catch (Exception e) {
+
+                }
+            }
+
+
+        }
+
+
+        return fullStackTrace;
+
+
     }
 
     public String getStackTrace(String testObject) {
 
-String fullStackTrace = "";
-      if(getFinalTestResult(testObject).equalsIgnoreCase("FAIL"));
-        {
-             JSONArray methodList = getMethodArray(testObject);
+        String fullStackTrace = "";
+
+        if (getFinalTestResult(testObject).equalsIgnoreCase("FAIL")) {
+
+            net.minidev.json.JSONArray list = JsonPath.parse(testObject).read("$.class.test-method");
 
 
-            net.minidev.json.JSONArray array =            JsonPath.parse(methodList.toString()).read("$.[*].exception.full-stacktrace");
+            JSONArray methodList = new JSONArray(list);
 
-            JSONArray finalStackTracs = new JSONArray(array.toString());
-           fullStackTrace = finalStackTracs.get(0).toString();
+
+            for (Object singleMethodResult : methodList) {
+                try {
+                    fullStackTrace = JsonPath.parse(singleMethodResult.toString()).read("$.exception.full-stacktrace");
+
+                    if (!fullStackTrace.equalsIgnoreCase("")) {
+                        break;
+                    }
+                } catch (Exception e) {
+
+                }
+            }
 
 
         }
@@ -215,54 +252,87 @@ String fullStackTrace = "";
     public JSONArray getMethodArray(String singleTestObject) {
 
         net.minidev.json.JSONArray list = JsonPath.parse(singleTestObject).read("$.class.test-method");
+        JSONArray intialMethodList = new JSONArray(list.toString());
 
-        JSONArray methodList = new JSONArray(list.toString());
-        return methodList;
+        JSONArray finalMethod = new JSONArray();
+        for (Object singleMethodObject : intialMethodList) {
+            finalMethod.put(getSingleMethodObject(singleMethodObject));
+        }
+        return finalMethod;
     }
 
 
-    public JSONObject getSingleMethodObject(Object testObject) {
+    public JSONObject getSingleMethodObject(Object singleMethodObject) {
         JSONObject methodObject = new JSONObject();
 
-        methodObject.put("is-config", getIsConfig(methodObject.toString()));
-        methodObject.put("name", getMethodName(methodObject.toString()));
-        methodObject.put("status", getMethodStatus(methodObject.toString()));
-        methodObject.put("started-at", getMethodStartedAt(methodObject.toString()));
-        methodObject.put("duration-ms", getDurationAt(methodObject.toString()));
-        methodObject.put("finished-at", getMethodFinished(methodObject.toString()));
+        methodObject.put("is-config", getIsConfig(singleMethodObject.toString()));
+        methodObject.put("name", getMethodName(singleMethodObject.toString()));
+        methodObject.put("status", getMethodStatus(singleMethodObject.toString()));
+        methodObject.put("started-at", getMethodStartedAt(singleMethodObject.toString()));
+        methodObject.put("duration-ms", getDurationAt(singleMethodObject.toString()));
+        methodObject.put("finished-at", getMethodFinished(singleMethodObject.toString()));
+        methodObject.put("steps", getSteps(singleMethodObject.toString()));
+
         return methodObject;
     }
 
-    public boolean getIsConfig(String methodObject)
-    {
-        return false;
+    public JSONArray getSteps(String methodObject) {
+        try {
+            net.minidev.json.JSONArray list = JsonPath.parse(methodObject).read("$.reporter-output.line");
+            JSONArray intialStepList = new JSONArray(list.toString());
+
+            for (Object singleSteps : intialStepList) {
+
+                JSONObject step = new JSONObject();
+
+                step.put("step", singleSteps.toString());
+                step.put("status", "PASS");
+
+            }
+        } catch (Exception e) {
+        }
+
+        return new JSONArray();
     }
 
-    public String getMethodName(String methodObject)
-    {
-        return "";
+    public boolean getIsConfig(String methodObject) {
+
+        boolean bool = false;
+        try {
+            boolean isConfig = JsonPath.parse(methodObject).read("$.is-config");
+            bool = isConfig;
+
+        } catch (Exception e) {
+
+        }
+        return bool;
     }
 
-    public String getMethodStatus(String methodObject)
-    {
-        return "";
+    public String getMethodName(String methodObject) {
+
+        String methodName = JsonPath.parse(methodObject).read("$.name");
+        return methodName;
     }
 
-    public String getMethodStartedAt(String methodObject)
-    {
-        return "";
+    public String getMethodStatus(String methodObject) {
+        String methodStatus = JsonPath.parse(methodObject).read("$.status");
+        return methodStatus;
     }
 
-    public String getMethodFinished(String methodObject)
-    {
-        return "";
+    public String getMethodStartedAt(String methodObject) {
+        String methodStartedAt = JsonPath.parse(methodObject).read("$.started-at");
+        return methodStartedAt;
     }
 
-    public String getDurationAt(String methodObject)
-    {
-        return "";
+    public String getMethodFinished(String methodObject) {
+        String methodFinishedAt = JsonPath.parse(methodObject).read("$.finished-at");
+        return methodFinishedAt;
     }
 
+    public int getDurationAt(String methodObject) {
+        int methodDurationms = JsonPath.parse(methodObject).read("$.duration-ms");
+        return methodDurationms;
+    }
 
 
 }
