@@ -21,7 +21,7 @@ public class ReportGenerator {
 
         JSONObject a = builder.convertXmlToJSON(builder.readXmlFile(dirPath));
 
-        System.out.println(a);
+
         System.out.println(colorize("Now Understanding it's meaning...", Attribute.BLUE_TEXT()));
 
         ReportDataConvertor convertor = new ReportDataConvertor(a);
@@ -31,10 +31,29 @@ public class ReportGenerator {
 
         Boolean result = requestBuilder.updateResult(key, buildKey, report);
         if (!result) {
-            System.out.println(colorize("Your Reports are reached the Tesbo World Now", Attribute.BLUE_TEXT()));
+            System.out.println(colorize("Your Reports are reached the Tesbo World Now", Attribute.RED_TEXT()));
         } else {
             System.out.println(colorize("Something Wrong.!!! Test are not reached at Destination", Attribute.BLUE_TEXT()));
         }
+
+    }
+
+    public void singleReportMode(String key, String dirPath) {
+        System.out.println(colorize("Creating a build", Attribute.BLUE_TEXT()));
+        String buildKey = requestBuilder.createBuild(key);
+
+        System.out.println(colorize("Fetching your test report..!!!", Attribute.BLUE_TEXT()));
+
+        JSONObject a = builder.convertXmlToJSON(builder.readXmlFile(dirPath));
+
+
+        System.out.println(colorize("Now Understanding it's meaning...", Attribute.BLUE_TEXT()));
+
+        ReportDataConvertor convertor = new ReportDataConvertor(a);
+        convertor.SingleReportMode(key, buildKey);
+
+        System.out.println(colorize("Now Sending your test details to our haven..!!!", Attribute.BLUE_TEXT()));
+
 
     }
 
@@ -45,8 +64,9 @@ public class ReportGenerator {
         System.out.println(colorize("Please Wait a Moment, We are checking details", Attribute.BLUE_TEXT()));
         ReportGenerator reportGenerator = new ReportGenerator();
         reportGenerator.jc.parse(args);
-        reportGenerator.generatorReport(reportGenerator.argument.buildKey, reportGenerator.argument.testDir);
+     //   reportGenerator.generatorReport(reportGenerator.argument.buildKey, reportGenerator.argument.testDir);
 
+        reportGenerator.singleReportMode(reportGenerator.argument.buildKey,reportGenerator.argument.testDir);
     }
 
 
