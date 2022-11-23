@@ -19,4 +19,34 @@ public class ReportArgument {
     public String testDir;
 
 
+    @Parameter(
+            names = {"--Browser", "-b"},
+            description = "Browser Name "
+
+    )
+    public String browser;
+
+    @Parameter(
+            names = {"--BrowserVer", "-bv"},
+            description = "Test Directory Path "
+
+    )
+    public String BrowserVersion;
+
+    @Parameter(
+            names = {"--Platform", "-p"},
+            description = "Test Directory Path "
+
+    )
+    public String platformName;
+
+    @Parameter(
+            names = {"--PlatformVer", "-pv"},
+            description = "Test Directory Path "
+
+    )
+    public String platformVer;
+
+
 }
+

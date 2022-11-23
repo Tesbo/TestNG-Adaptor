@@ -41,11 +41,20 @@ public class ReportDataConvertor {
         JSONArray TestList = getAvailableTestList();
         RequestBuilder requestBuilder = new RequestBuilder();
 
+        System.out.println(colorize("Total " + TestList.length() + " Test Found", Attribute.BLUE_TEXT()));
+
+        System.out.println(colorize("Sending them to our heaven", Attribute.BLUE_TEXT()));
+
         for (int i = 0; i < TestList.length(); i++) {
+            System.out.print(colorize(".", Attribute.MAGENTA_TEXT(), Attribute.BLUE_BACK()));
+           if(i%60 == 0 )
+           {
+               System.out.println("");
+    }
 
             JSONArray tempTestList = new JSONArray();
             tempTestList.put(TestList.get(i));
-            System.out.println("i : " + i);
+
             JSONObject report = new JSONObject();
             JSONObject suite = new JSONObject();
 
@@ -60,9 +69,8 @@ public class ReportDataConvertor {
             Boolean result = requestBuilder.updateResult(key, buildKey, report);
 
             if (!result) {
-                System.out.println(colorize("Your Reports are reached the Tesbo World Now", Attribute.RED_TEXT()));
             } else {
-                System.out.println(colorize("Something Wrong.!!! Test are not reached at Destination", Attribute.BLUE_TEXT()));
+                System.out.println(colorize("Something Wrong.!!! Test has missed the Train to Tesbo World", Attribute.RED_TEXT()));
             }
         }
 
@@ -144,7 +152,6 @@ public class ReportDataConvertor {
         try {
 
             String ClassName = JsonPath.parse(object).read("$.class.name");
-
             String[] nameSplitList = ClassName.split("\\.");
 
             folderName = nameSplitList[nameSplitList.length - 2];
@@ -235,7 +242,7 @@ public class ReportDataConvertor {
 
     public String getFailureMessage(String testObject) {
 
-        String fullStackTrace = "Failed to get the Stack Trace";
+        String failureMessage = "Failed to get the Stack Trace";
 
         try {
             if (getFinalTestResult(testObject).equalsIgnoreCase("FAIL")) {
@@ -248,9 +255,9 @@ public class ReportDataConvertor {
 
                 for (Object singleMethodResult : methodList) {
                     try {
-                        fullStackTrace = JsonPath.parse(singleMethodResult.toString()).read("$.exception.message");
+                        failureMessage = JsonPath.parse(singleMethodResult.toString()).read("$.exception.message");
 
-                        if (!fullStackTrace.equalsIgnoreCase("")) {
+                        if (!failureMessage.equalsIgnoreCase("")) {
                             break;
                         }
                     } catch (Exception e) {
@@ -264,9 +271,7 @@ public class ReportDataConvertor {
 
         }
 
-        return fullStackTrace;
-
-
+        return failureMessage;
     }
 
     public String getStackTrace(String testObject) {

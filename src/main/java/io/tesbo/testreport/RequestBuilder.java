@@ -49,10 +49,10 @@ public class RequestBuilder {
 
             Response response = client.newCall(request).execute();
          String a = response.body().string();
-            System.out.println(a);
+
             JSONObject resultObject = new JSONObject(a);
 
-            System.out.println(resultObject);
+
             status = (Boolean) resultObject.get("is_error");
 
 

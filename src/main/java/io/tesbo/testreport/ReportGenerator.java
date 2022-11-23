@@ -21,7 +21,6 @@ public class ReportGenerator {
 
         JSONObject a = builder.convertXmlToJSON(builder.readXmlFile(dirPath));
 
-
         System.out.println(colorize("Now Understanding it's meaning...", Attribute.BLUE_TEXT()));
 
         ReportDataConvertor convertor = new ReportDataConvertor(a);
@@ -38,7 +37,13 @@ public class ReportGenerator {
 
     }
 
-    public void singleReportMode(String key, String dirPath) {
+    public void generateReportDirectly(String key, String dirPath, String platform, String browser, String browserVer, String platformVer) {
+
+        System.out.println(colorize("Hey Let's send your test details to Tesbo World", Attribute.BLUE_TEXT()));
+
+        System.out.println(colorize("Please Wait a Moment, We are checking details", Attribute.BLUE_TEXT()));
+
+
         System.out.println(colorize("Creating a build", Attribute.BLUE_TEXT()));
         String buildKey = requestBuilder.createBuild(key);
 
@@ -46,27 +51,40 @@ public class ReportGenerator {
 
         JSONObject a = builder.convertXmlToJSON(builder.readXmlFile(dirPath));
 
-
         System.out.println(colorize("Now Understanding it's meaning...", Attribute.BLUE_TEXT()));
-
         ReportDataConvertor convertor = new ReportDataConvertor(a);
         convertor.SingleReportMode(key, buildKey);
-
-        System.out.println(colorize("Now Sending your test details to our haven..!!!", Attribute.BLUE_TEXT()));
+        System.out.println();
+        System.out.println(colorize("Hureeeee!!!!.....All your Test Are Reached to it's Destination", Attribute.BLUE_TEXT()));
 
 
     }
 
 
     public static void main(String[] args) {
-        System.out.println(colorize("Welcome to the Tesbo World..!!!", Attribute.BLUE_TEXT()));
-
-        System.out.println(colorize("Please Wait a Moment, We are checking details", Attribute.BLUE_TEXT()));
         ReportGenerator reportGenerator = new ReportGenerator();
         reportGenerator.jc.parse(args);
-     //   reportGenerator.generatorReport(reportGenerator.argument.buildKey, reportGenerator.argument.testDir);
+TestngWatcher testngWatcher = new TestngWatcher();
 
-        reportGenerator.singleReportMode(reportGenerator.argument.buildKey,reportGenerator.argument.testDir);
+
+        System.out.println(colorize("Thank you for the Waking me up, I'm Tesbo Report", Attribute.BLUE_TEXT()));
+
+        System.out.println(colorize("Now I will Keep Eye on Test Output Dir", Attribute.BLUE_TEXT()));
+
+        while (true) {
+
+            if(testngWatcher.checkFileChanged(reportGenerator.argument.testDir)) {
+                System.out.println(colorize("ALERT....ALERT....I found a New Change,", Attribute.RED_TEXT()));
+
+                reportGenerator.generateReportDirectly(reportGenerator.argument.buildKey, reportGenerator.argument.testDir, reportGenerator.argument.platformName, reportGenerator.argument.browser, reportGenerator.argument.BrowserVersion, reportGenerator.argument.platformVer);
+
+                System.out.println(colorize("Back to Business now, Again Watching your report.", Attribute.BLUE_TEXT()));
+
+            }
+
+        }
+
+
     }
 
 
