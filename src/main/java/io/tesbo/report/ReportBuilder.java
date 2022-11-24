@@ -1,4 +1,4 @@
-package io.tesbo.testreport;
+package io.tesbo.report;
 
 import org.json.JSONException;
 import org.json.JSONObject;

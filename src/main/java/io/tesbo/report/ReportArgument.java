@@ -1,4 +1,4 @@
-package io.tesbo.testreport;
+package io.tesbo.report;
 
 import com.beust.jcommander.Parameter;
 

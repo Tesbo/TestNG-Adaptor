@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.Tesbo</groupId>
     <artifactId>TestReport-Adaptor</artifactId>
-    <version>0.0.3</version>
+    <version>0.0.1</version>
     <distributionManagement>
         <repository>
             <id>github</id>

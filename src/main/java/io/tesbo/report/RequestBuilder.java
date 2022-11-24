@@ -1,4 +1,4 @@
-package io.tesbo.testreport;
+package io.tesbo.report;
 
 import okhttp3.*;
 import org.json.JSONObject;

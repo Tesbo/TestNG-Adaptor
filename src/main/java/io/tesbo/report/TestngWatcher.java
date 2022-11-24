@@ -1,4 +1,4 @@
-package io.tesbo.testreport;
+package io.tesbo.report;
 
 import java.io.IOException;
 import java.nio.file.*;
