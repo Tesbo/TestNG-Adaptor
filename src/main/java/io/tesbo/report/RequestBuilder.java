@@ -4,6 +4,7 @@ import okhttp3.*;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 public class RequestBuilder {
 
@@ -37,6 +38,14 @@ public class RequestBuilder {
         Boolean status = null;
         OkHttpClient client = new OkHttpClient().newBuilder()
                 .build();
+
+        OkHttpClient.Builder builder = new OkHttpClient.Builder();
+        builder.connectTimeout(60, TimeUnit.SECONDS);
+        builder.readTimeout(60, TimeUnit.SECONDS);
+        builder.writeTimeout(60, TimeUnit.SECONDS);
+
+        client = builder.build();
+
         MediaType mediaType = MediaType.parse("application/json");
         RequestBody body = RequestBody.create(mediaType, requestBody.toString());
         Request request = new Request.Builder()

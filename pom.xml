@@ -3,16 +3,39 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.Tesbo</groupId>
-    <artifactId>TestReport-Adaptor</artifactId>
-    <version>0.0.1</version>
+    <groupId>io.tesbo</groupId>
+    <artifactId>Report-Adaptor</artifactId>
+    <version>3.0.0</version>
+
     <distributionManagement>
         <repository>
-            <id>github</id>
-            <name>GitHub OWNER Apache Maven Packages</name>
-            <url>https://maven.pkg.github.com/Tesbo/TestNG-Adaptor</url>
+            <id>central</id>
+            <name>4c832183db03-releases</name>
+            <url>https://download.testmanframework.com/artifactory/Tesbo</url>
         </repository>
+        <snapshotRepository>
+            <id>snapshots</id>
+            <name>4c832183db03-snapshots</name>
+            <url>https://download.testmanframework.com/artifactory/Tesbo</url>
+        </snapshotRepository>
     </distributionManagement>
+
+    <repositories>
+        <repository>
+            <id>my-repo1</id>
+            <name>your custom repo</name>
+            <url>https://download.testmanframework.com/artifactory/Tesbo</url>
+        </repository>
+
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+
+    </repositories>
+
+
+
     <build>
         <plugins>
             <plugin>
