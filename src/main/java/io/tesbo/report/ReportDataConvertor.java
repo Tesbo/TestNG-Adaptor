@@ -27,7 +27,7 @@ public class ReportDataConvertor {
         suite.put("name", getSuiteName());
         suite.put("finished-at", getFinishedAt());
         suite.put("duration-ms", getDuration());
-        suite.put("tests", getAvailableTestList());
+//        suite.put("tests", getAvailableTestList());
         report.put("Suite", suite);
 
 
@@ -35,10 +35,10 @@ public class ReportDataConvertor {
     }
 
 
-    public void SingleReportMode(String key, String buildKey) {
+    public void SingleReportMode(String key, String buildKey, String platform, String browser, String browserVer, String platformVer, String deviceName) {
 
 
-        JSONArray TestList = getAvailableTestList();
+        JSONArray TestList = getAvailableTestList(platform, browser, browserVer, platformVer, deviceName);
         RequestBuilder requestBuilder = new RequestBuilder();
 
         System.out.println(colorize("Total " + TestList.length() + " Test Found", Attribute.BLUE_TEXT()));
@@ -104,14 +104,14 @@ public class ReportDataConvertor {
         return testList;
     }
 
-    public JSONArray getAvailableTestList() {
+    public JSONArray getAvailableTestList(String platform, String browser, String browserVer, String platformVer, String deviceName) {
 
         JSONArray finalTestList = new JSONArray();
         JSONArray getOldList = getTestList();
 
         for (Object singleTest : getOldList) {
 
-            JSONObject singleTestOb = getSingleTestObject(singleTest);
+            JSONObject singleTestOb = getSingleTestObject(singleTest, platform, browser, browserVer, platformVer, deviceName);
             if (singleTestOb.length() > 0) {
                 finalTestList.put(singleTestOb);
             }
@@ -120,7 +120,7 @@ public class ReportDataConvertor {
 
     }
 
-    public JSONObject getSingleTestObject(Object testObject) {
+    public JSONObject getSingleTestObject(Object testObject, String platform, String browser, String browserVer, String platformVer, String deviceName) {
         JSONObject object = new JSONObject();
         String singleTestObject = testObject.toString();
 
@@ -129,18 +129,18 @@ public class ReportDataConvertor {
             object.put("testID", UUID.randomUUID().toString());
             object.put("moduleName", getModuleName(singleTestObject));
             object.put("final-test-status", getFinalTestResult(singleTestObject));
-            object.put("platformName", getPlatForm());
-            object.put("platformVersion", getPlatVersion());
-            object.put("browser", getBrowser());
-            object.put("browserVersion", getBrowserVersion());
-            object.put("deviceName", getDeviceName());
+            object.put("platformName", getPlatForm(platform));
+            object.put("platformVersion", getPlatVersion(platformVer));
+            object.put("browser", getBrowser(browser));
+            object.put("browserVersion", getBrowserVersion(browserVer));
+            object.put("deviceName", getDeviceName(deviceName));
             object.put("started-at", getTestStartedAt(singleTestObject));
             object.put("finished-at", getTestFinishedAt(singleTestObject));
             object.put("duration-ms", getTestDuration(singleTestObject));
             object.put("name", getTestName(singleTestObject));
             object.put("failureMessage", getFailureMessage(singleTestObject));
             object.put("full-stacktrace", getStackTrace(singleTestObject));
-            object.put("screenshot", getScreenshot());
+            object.put("screenshot", getScreenshot(deviceName));
             object.put("methods", methods);
         }
         return object;
@@ -193,24 +193,44 @@ public class ReportDataConvertor {
         return finalTestResult;
     }
 
-    public String getPlatForm() {
-        return "Win1-";
+    public String getPlatForm(String platform) {
+        if(platform == null) {
+            return "Win10";
+        }else{
+            return platform;
+        }
     }
 
-    public String getPlatVersion() {
-        return "Win1-";
+    public String getPlatVersion(String platformVer) {
+        if(platformVer == null) {
+            return "Win1-";
+        }else{
+            return platformVer;
+        }
     }
 
-    public String getBrowser() {
-        return "Chrome";
+    public String getBrowser(String browser) {
+        if(browser == null) {
+            return "Chrome";
+        }else{
+            return browser;
+        }
     }
 
-    public String getBrowserVersion() {
-        return "104";
+    public String getBrowserVersion(String browserVer) {
+        if(browserVer == null) {
+            return "104";
+        }else{
+            return browserVer;
+        }
     }
 
-    public String getDeviceName() {
-        return "Android";
+    public String getDeviceName(String deviceName) {
+        if(deviceName == null){
+            return "Android";
+        }else {
+            return deviceName;
+        }
     }
 
     public String getTestStartedAt(String object) {
@@ -308,8 +328,12 @@ public class ReportDataConvertor {
         return fullStackTrace;
     }
 
-    public String getScreenshot() {
-        return "Android";
+    public String getScreenshot(String deviceName) {
+        if(deviceName == null){
+            return "Android";
+        }else {
+            return deviceName;
+        }
     }
 
 

@@ -24,20 +24,20 @@ public class ReportGenerator {
         System.out.println(colorize("Now Understanding it's meaning...", Attribute.BLUE_TEXT()));
 
         ReportDataConvertor convertor = new ReportDataConvertor(a);
-        JSONObject report = convertor.PrepareFinalReport();
+//        JSONObject report = convertor.PrepareFinalReport();
 
         System.out.println(colorize("Now Sending your test details to our haven..!!!", Attribute.BLUE_TEXT()));
 
-        Boolean result = requestBuilder.updateResult(key, buildKey, report);
-        if (!result) {
-            System.out.println(colorize("Your Reports are reached the Tesbo World Now", Attribute.RED_TEXT()));
-        } else {
-            System.out.println(colorize("Something Wrong.!!! Test are not reached at Destination", Attribute.BLUE_TEXT()));
-        }
+//        Boolean result = requestBuilder.updateResult(key, buildKey, report);
+//        if (!result) {
+//            System.out.println(colorize("Your Reports are reached the Tesbo World Now", Attribute.RED_TEXT()));
+//        } else {
+//            System.out.println(colorize("Something Wrong.!!! Test are not reached at Destination", Attribute.BLUE_TEXT()));
+//        }
 
     }
 
-    public void generateReportDirectly(String key, String dirPath, String platform, String browser, String browserVer, String platformVer) {
+    public void generateReportDirectly(String key, String dirPath, String platform, String browser, String browserVer, String platformVer, String deviceName) {
 
         System.out.println(colorize("Hey Let's send your test details to Tesbo World", Attribute.BLUE_TEXT()));
 
@@ -53,7 +53,7 @@ public class ReportGenerator {
 
         System.out.println(colorize("Now Understanding it's meaning...", Attribute.BLUE_TEXT()));
         ReportDataConvertor convertor = new ReportDataConvertor(a);
-        convertor.SingleReportMode(key, buildKey);
+        convertor.SingleReportMode(key, buildKey, platform, browser, browserVer, platformVer, deviceName);
         System.out.println();
         System.out.println(colorize("Hureeeee!!!!.....All your Test Are Reached to it's Destination", Attribute.BLUE_TEXT()));
 
@@ -64,7 +64,7 @@ public class ReportGenerator {
     public static void main(String[] args) {
         ReportGenerator reportGenerator = new ReportGenerator();
         reportGenerator.jc.parse(args);
-TestngWatcher testngWatcher = new TestngWatcher();
+        TestngWatcher testngWatcher = new TestngWatcher();
 
 
         System.out.println(colorize("Thank you for the Waking me up, I'm Tesbo Report", Attribute.BLUE_TEXT()));
@@ -76,7 +76,7 @@ TestngWatcher testngWatcher = new TestngWatcher();
             if(testngWatcher.checkFileChanged(reportGenerator.argument.testDir)) {
                 System.out.println(colorize("ALERT....ALERT....I found a New Change,", Attribute.RED_TEXT()));
 
-                reportGenerator.generateReportDirectly(reportGenerator.argument.buildKey, reportGenerator.argument.testDir, reportGenerator.argument.platformName, reportGenerator.argument.browser, reportGenerator.argument.BrowserVersion, reportGenerator.argument.platformVer);
+                reportGenerator.generateReportDirectly(reportGenerator.argument.buildKey, reportGenerator.argument.testDir, reportGenerator.argument.platformName, reportGenerator.argument.browser, reportGenerator.argument.BrowserVersion, reportGenerator.argument.platformVer,reportGenerator.argument.deviceName);
 
                 System.out.println(colorize("Back to Business now, Again Watching your report.", Attribute.BLUE_TEXT()));
 
