@@ -296,7 +296,7 @@ public class ReportDataConvertor {
 
         String finalTestResult = "SKIPPED";
         try {
-            net.minidev.json.JSONArray list = JsonPath.parse(array).read("$.[*].status");
+            net.minidev.json.JSONArray list = JsonPath.parse(array.toString()).read("$.[*].status");
 
             JSONArray testList = new JSONArray(list.toString());
 
