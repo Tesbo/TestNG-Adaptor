@@ -37,12 +37,12 @@ public class ReportGenerator {
 
     }
 
+    //Used by StandAlon as Well as Tesbo Framework
     public void generateReportDirectly(String key, String dirPath, String platform, String browser, String browserVer, String platformVer) {
 
         System.out.println(colorize("Hey Let's send your test details to Tesbo World", Attribute.BLUE_TEXT()));
 
         System.out.println(colorize("Please Wait a Moment, We are checking details", Attribute.BLUE_TEXT()));
-
 
         System.out.println(colorize("Creating a build", Attribute.BLUE_TEXT()));
         String buildKey = requestBuilder.createBuild(key);
@@ -53,7 +53,7 @@ public class ReportGenerator {
 
         System.out.println(colorize("Now Understanding it's meaning...", Attribute.BLUE_TEXT()));
         ReportDataConvertor convertor = new ReportDataConvertor(a);
-        convertor.SingleReportMode(key, buildKey);
+        convertor.batchModeReport(key, buildKey);
         System.out.println();
         System.out.println(colorize("Hureeeee!!!!.....All your Test Are Reached to it's Destination", Attribute.BLUE_TEXT()));
 
