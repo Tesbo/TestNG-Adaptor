@@ -6,6 +6,7 @@ import com.jayway.jsonpath.JsonPath;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.sql.SQLOutput;
 import java.util.LinkedHashMap;
 import java.util.UUID;
 
@@ -111,7 +112,6 @@ public class ReportDataConvertor {
         System.out.println("TestList Size After" + finalTestList.length());
 
 
-
         RequestBuilder requestBuilder = new RequestBuilder();
 
         System.out.println(colorize("Total " + finalTestList.length() + " Test Found", Attribute.BLUE_TEXT()));
@@ -149,21 +149,9 @@ public class ReportDataConvertor {
         }
 
 
-
-
-
-
-
-
         //calculate Batch Size(How Many Batch)
         //Prepare the single batch
         //Send Them to server
-
-
-
-
-
-
 
 
     }
@@ -191,17 +179,28 @@ public class ReportDataConvertor {
 
     public JSONArray getTestList() {
 
-        LinkedHashMap list = JsonPath.parse(reportData.toString()).read("$.testng-results.suite.test");
         JSONArray testList = null;
-
-
         try {
-            testList = new JSONArray(list);
-        } catch (Exception e) {
-            testList = new JSONArray();
-            testList.put(new JSONObject(list).toString());
-        }
+            LinkedHashMap list = JsonPath.parse(reportData.toString()).read("$.testng-results.suite.test");
 
+            try {
+                testList = new JSONArray(list);
+            } catch (Exception e) {
+                testList = new JSONArray();
+                testList.put(new JSONObject(list).toString());
+            }
+
+        } catch (ClassCastException e) {
+            net.minidev.json.JSONArray list = JsonPath.parse(reportData.toString()).read("$.testng-results.suite.test");
+
+            try {
+                testList = new JSONArray(list.toString());
+            } catch (Exception e1) {
+                testList = new JSONArray();
+                testList.put(new JSONObject(list).toString());
+            }
+
+        }
         return testList;
     }
 
@@ -225,7 +224,7 @@ public class ReportDataConvertor {
         String singleTestObject = testObject.toString();
 
         JSONArray methods = getMethodArray(testObject.toString());
-        if (methods.length() > 2) {
+        if (methods.length() > 0) {
             object.put("testID", UUID.randomUUID().toString());
             object.put("moduleName", getModuleName(singleTestObject));
             object.put("final-test-status", getFinalTestResult(singleTestObject));
@@ -252,7 +251,7 @@ public class ReportDataConvertor {
      * @param testObject
      * @return
      */
-    public JSONObject  createTestFromMethodObject(Object testObject, JSONArray methods) {
+    public JSONObject createTestFromMethodObject(Object testObject, JSONArray methods) {
         JSONObject object = new JSONObject();
         String singleTestObject = testObject.toString();
         System.out.println("Single Test Object" + singleTestObject);
@@ -293,8 +292,7 @@ public class ReportDataConvertor {
     }
 
 
-    public String getTestResultForSingleMethods(JSONArray array)
-    {
+    public String getTestResultForSingleMethods(JSONArray array) {
 
         String finalTestResult = "SKIPPED";
         try {
@@ -349,14 +347,10 @@ public class ReportDataConvertor {
                 finalTestResult = "FAIL";
             }
         } catch (Exception e) {
-               e.printStackTrace();
+            e.printStackTrace();
         }
         return finalTestResult;
     }
-
-
-
-
 
 
     public String getPlatForm() {
@@ -490,6 +484,32 @@ public class ReportDataConvertor {
                 finalMethod.put(getSingleMethodObject(singleMethodObject));
             }
         } catch (Exception e) {
+
+            System.out.println("Single Test Object" + singleTestObject);
+            LinkedHashMap  list = JsonPath.parse(singleTestObject).read("$.class.test-method");
+
+            try {
+                System.out.println("linked" +list.toString());
+                JSONArray intialMethodList = new JSONArray(list);
+                System.out.println("JSON ARRAY" + intialMethodList);
+
+                for (Object singleMethodObject : intialMethodList) {
+                    finalMethod.put(getSingleMethodObject(singleMethodObject));
+                }
+            }catch (Exception e2)
+            {
+
+                JSONObject intialMethodObject = new JSONObject(list);
+
+                JSONArray intialMethodList = new JSONArray();
+                intialMethodList.put(intialMethodObject);
+
+                for (Object singleMethodObject : intialMethodList) {
+                    finalMethod.put(getSingleMethodObject(singleMethodObject));
+                }
+
+            }
+
 
         }
         return finalMethod;
