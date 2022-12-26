@@ -354,11 +354,11 @@ public class ReportDataConvertor {
 
 
     public String getPlatForm() {
-        return "Win1-";
+        return "Win10";
     }
 
     public String getPlatVersion() {
-        return "Win1-";
+        return "Win10";
     }
 
     public String getBrowser() {

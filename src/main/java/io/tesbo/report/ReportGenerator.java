@@ -61,10 +61,12 @@ public class ReportGenerator {
     }
 
 
+
+
     public static void main(String[] args) {
         ReportGenerator reportGenerator = new ReportGenerator();
         reportGenerator.jc.parse(args);
-TestngWatcher testngWatcher = new TestngWatcher();
+        TestngWatcher testngWatcher = new TestngWatcher();
 
 
         System.out.println(colorize("Thank you for the Waking me up, I'm Tesbo Report", Attribute.BLUE_TEXT()));
