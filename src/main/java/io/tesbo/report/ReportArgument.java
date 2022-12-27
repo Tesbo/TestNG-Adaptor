@@ -28,25 +28,31 @@ public class ReportArgument {
 
     @Parameter(
             names = {"--BrowserVer", "-bv"},
-            description = "Test Directory Path "
+            description = "Browser Version"
 
     )
     public String BrowserVersion;
 
     @Parameter(
             names = {"--Platform", "-p"},
-            description = "Test Directory Path "
+            description = "Platform Name"
 
     )
     public String platformName;
 
     @Parameter(
             names = {"--PlatformVer", "-pv"},
-            description = "Test Directory Path "
+            description = "Platform Version"
 
     )
     public String platformVer;
 
+    @Parameter(
+            names = {"--DeviceName", "-dn"},
+            description = "Device Name "
+
+    )
+    public String deviceName;
 
 }
 
