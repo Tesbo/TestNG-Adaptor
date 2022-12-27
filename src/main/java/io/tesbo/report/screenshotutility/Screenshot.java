@@ -26,4 +26,7 @@ public class Screenshot {
         return filePathLog;
     }
 
+
+
+
 }
