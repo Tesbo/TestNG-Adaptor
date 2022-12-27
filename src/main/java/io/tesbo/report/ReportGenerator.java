@@ -2,7 +2,9 @@ package io.tesbo.report;
 
 import com.beust.jcommander.JCommander;
 import com.diogonunes.jcolor.Attribute;
+import org.json.JSONArray;
 import org.json.JSONObject;
+
 
 import static com.diogonunes.jcolor.Ansi.colorize;
 
@@ -49,13 +51,16 @@ public class ReportGenerator {
 
         System.out.println(colorize("Fetching your test report..!!!", Attribute.BLUE_TEXT()));
 
-        JSONObject a = builder.convertXmlToJSON(builder.readXmlFile(dirPath));
-
-        System.out.println(colorize("Now Understanding it's meaning...", Attribute.BLUE_TEXT()));
-        ReportDataConvertor convertor = new ReportDataConvertor(a);
+//        JSONObject a = builder.convertXmlToJSON(builder.readXmlFile(dirPath));
+         JSONArray a = builder.readJsonFile(dirPath);
+//        System.out.println("**************"+a);
+//
+//        System.out.println(colorize("Now Understanding it's meaning...", Attribute.BLUE_TEXT()));
+        CucumberDataConverter convertor = new CucumberDataConverter(a);
+//        System.out.println("********"+a);
         convertor.batchModeReport(key, buildKey);
-        System.out.println();
-        System.out.println(colorize("Hureeeee!!!!.....All your Test Are Reached to it's Destination", Attribute.BLUE_TEXT()));
+//        System.out.println();
+//        System.out.println(colorize("Hureeeee!!!!.....All your Test Are Reached to it's Destination", Attribute.BLUE_TEXT()));
 
 
     }
@@ -64,25 +69,27 @@ public class ReportGenerator {
     public static void main(String[] args) {
         ReportGenerator reportGenerator = new ReportGenerator();
         reportGenerator.jc.parse(args);
-TestngWatcher testngWatcher = new TestngWatcher();
+        TestngWatcher testngWatcher = new TestngWatcher();
 
 
         System.out.println(colorize("Thank you for the Waking me up, I'm Tesbo Report", Attribute.BLUE_TEXT()));
 
         System.out.println(colorize("Now I will Keep Eye on Test Output Dir", Attribute.BLUE_TEXT()));
 
-        while (true) {
+        reportGenerator.generateReportDirectly(reportGenerator.argument.buildKey, reportGenerator.argument.testDir, reportGenerator.argument.platformName, reportGenerator.argument.browser, reportGenerator.argument.BrowserVersion, reportGenerator.argument.platformVer);
 
-            if(testngWatcher.checkFileChanged(reportGenerator.argument.testDir)) {
-                System.out.println(colorize("ALERT....ALERT....I found a New Change,", Attribute.RED_TEXT()));
+//        while (true) {
+//
+//            if(testngWatcher.checkFileChanged(reportGenerator.argument.testDir)) {
+//                System.out.println(colorize("ALERT....ALERT....I found a New Change,", Attribute.RED_TEXT()));
+//
+//                reportGenerator.generateReportDirectly(reportGenerator.argument.buildKey, reportGenerator.argument.testDir, reportGenerator.argument.platformName, reportGenerator.argument.browser, reportGenerator.argument.BrowserVersion, reportGenerator.argument.platformVer);
+//
+//                System.out.println(colorize("Back to Business now, Again Watching your report.", Attribute.BLUE_TEXT()));
+//
+//            }
 
-                reportGenerator.generateReportDirectly(reportGenerator.argument.buildKey, reportGenerator.argument.testDir, reportGenerator.argument.platformName, reportGenerator.argument.browser, reportGenerator.argument.BrowserVersion, reportGenerator.argument.platformVer);
-
-                System.out.println(colorize("Back to Business now, Again Watching your report.", Attribute.BLUE_TEXT()));
-
-            }
-
-        }
+//        }
 
 
     }
