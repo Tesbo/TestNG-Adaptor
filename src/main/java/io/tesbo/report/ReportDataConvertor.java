@@ -6,6 +6,8 @@ import com.jayway.jsonpath.JsonPath;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.sql.SQLOutput;
+import java.util.LinkedHashMap;
 import java.util.UUID;
 
 import static com.diogonunes.jcolor.Ansi.colorize;
@@ -19,15 +21,13 @@ public class ReportDataConvertor {
     }
 
     public JSONObject PrepareFinalReport() {
-
-
         JSONObject report = new JSONObject();
         JSONObject suite = new JSONObject();
         suite.put("started-at", getStartedAt());
         suite.put("name", getSuiteName());
         suite.put("finished-at", getFinishedAt());
         suite.put("duration-ms", getDuration());
-//        suite.put("tests", getAvailableTestList());
+        suite.put("tests", getAvailableTestList());
         report.put("Suite", suite);
 
 
@@ -35,10 +35,10 @@ public class ReportDataConvertor {
     }
 
 
-    public void SingleReportMode(String key, String buildKey, String platform, String browser, String browserVer, String platformVer, String deviceName) {
+    public void SingleReportMode(String key, String buildKey) {
 
 
-        JSONArray TestList = getAvailableTestList(platform, browser, browserVer, platformVer, deviceName);
+        JSONArray TestList = getAvailableTestList();
         RequestBuilder requestBuilder = new RequestBuilder();
 
         System.out.println(colorize("Total " + TestList.length() + " Test Found", Attribute.BLUE_TEXT()));
@@ -47,10 +47,9 @@ public class ReportDataConvertor {
 
         for (int i = 0; i < TestList.length(); i++) {
             System.out.print(colorize(".", Attribute.MAGENTA_TEXT(), Attribute.BLUE_BACK()));
-           if(i%60 == 0 )
-           {
-               System.out.println("");
-    }
+            if (i % 60 == 0) {
+                System.out.println("");
+            }
 
             JSONArray tempTestList = new JSONArray();
             tempTestList.put(TestList.get(i));
@@ -66,6 +65,7 @@ public class ReportDataConvertor {
             suite.put("finished-at", getFinishedAt());
             report.put("Suite", suite);
 
+
             Boolean result = requestBuilder.updateResult(key, buildKey, report);
 
             if (!result) {
@@ -73,6 +73,85 @@ public class ReportDataConvertor {
                 System.out.println(colorize("Something Wrong.!!! Test has missed the Train to Tesbo World", Attribute.RED_TEXT()));
             }
         }
+
+
+    }
+
+
+    public void batchModeReport(String key, String buildKey) {
+
+        JSONArray TestList = getAvailableTestList();
+        System.out.println("TestList Size Before" + TestList.length());
+        /*
+         * Getting the list of the methods from the test
+         * */
+        int length = TestList.length();
+        JSONArray finalTestList = new JSONArray();
+
+        for (int i = 0; i < length; i++) {
+
+            JSONArray methodList = (JSONArray) ((JSONObject) TestList.get(i)).get("methods");
+
+            for (Object a : methodList) {
+
+                JSONObject singleMethod = (JSONObject) a;
+                JSONArray tempArray = new JSONArray();
+                if ((boolean) singleMethod.get("is-config")) {
+                } else {
+                    tempArray.put(singleMethod);
+                    System.out.println("tempArray Method Size " + tempArray.length());
+
+                    finalTestList.put(createTestFromMethodObject(TestList.get(i), tempArray));
+                }
+
+            }
+
+        }
+        System.out.println(finalTestList);
+
+        System.out.println("TestList Size After" + finalTestList.length());
+
+
+        RequestBuilder requestBuilder = new RequestBuilder();
+
+        System.out.println(colorize("Total " + finalTestList.length() + " Test Found", Attribute.BLUE_TEXT()));
+
+        System.out.println(colorize("Sending them to our heaven", Attribute.BLUE_TEXT()));
+
+        for (int i = 0; i < finalTestList.length(); i++) {
+            System.out.print(colorize(".", Attribute.MAGENTA_TEXT(), Attribute.BLUE_BACK()));
+            if (i % 60 == 0) {
+                System.out.println("");
+            }
+
+            JSONArray tempTestList = new JSONArray();
+            tempTestList.put(finalTestList.get(i));
+
+            JSONObject report = new JSONObject();
+
+            JSONObject suite = new JSONObject();
+
+            suite.put("started-at", getStartedAt());
+            suite.put("name", getSuiteName());
+
+            suite.put("duration-ms", getDuration());
+            suite.put("tests", tempTestList);
+            suite.put("finished-at", getFinishedAt());
+            report.put("Suite", suite);
+
+
+            Boolean result = requestBuilder.updateResult(key, buildKey, report);
+
+            if (!result) {
+            } else {
+                System.out.println(colorize("Something Wrong.!!! Test has missed the Train to Tesbo World", Attribute.RED_TEXT()));
+            }
+        }
+
+
+        //calculate Batch Size(How Many Batch)
+        //Prepare the single batch
+        //Send Them to server
 
 
     }
@@ -99,50 +178,101 @@ public class ReportDataConvertor {
     }
 
     public JSONArray getTestList() {
-        net.minidev.json.JSONArray list = JsonPath.parse(reportData.toString()).read("$.testng-results.suite.test");
-        JSONArray testList = new JSONArray(list.toString());
+
+        JSONArray testList = null;
+        try {
+            LinkedHashMap list = JsonPath.parse(reportData.toString()).read("$.testng-results.suite.test");
+
+            try {
+                testList = new JSONArray(list);
+            } catch (Exception e) {
+                testList = new JSONArray();
+                testList.put(new JSONObject(list).toString());
+            }
+
+        } catch (ClassCastException e) {
+            net.minidev.json.JSONArray list = JsonPath.parse(reportData.toString()).read("$.testng-results.suite.test");
+
+            try {
+                testList = new JSONArray(list.toString());
+            } catch (Exception e1) {
+                testList = new JSONArray();
+                testList.put(new JSONObject(list).toString());
+            }
+
+        }
         return testList;
     }
 
-    public JSONArray getAvailableTestList(String platform, String browser, String browserVer, String platformVer, String deviceName) {
+    public JSONArray getAvailableTestList() {
 
         JSONArray finalTestList = new JSONArray();
         JSONArray getOldList = getTestList();
-
-        for (Object singleTest : getOldList) {
-
-            JSONObject singleTestOb = getSingleTestObject(singleTest, platform, browser, browserVer, platformVer, deviceName);
-            if (singleTestOb.length() > 0) {
+        for (Object test : getOldList) {
+            JSONObject singleTestOb = getSingleTestObject(test);
+            if (singleTestOb.length() >= 0) {
                 finalTestList.put(singleTestOb);
             }
         }
+
         return finalTestList;
 
     }
 
-    public JSONObject getSingleTestObject(Object testObject, String platform, String browser, String browserVer, String platformVer, String deviceName) {
+    public JSONObject getSingleTestObject(Object testObject) {
         JSONObject object = new JSONObject();
         String singleTestObject = testObject.toString();
 
         JSONArray methods = getMethodArray(testObject.toString());
-        if (methods.length() > 2) {
+        if (methods.length() > 0) {
             object.put("testID", UUID.randomUUID().toString());
             object.put("moduleName", getModuleName(singleTestObject));
             object.put("final-test-status", getFinalTestResult(singleTestObject));
-            object.put("platformName", getPlatForm(platform));
-            object.put("platformVersion", getPlatVersion(platformVer));
-            object.put("browser", getBrowser(browser));
-            object.put("browserVersion", getBrowserVersion(browserVer));
-            object.put("deviceName", getDeviceName(deviceName));
+            object.put("platformName", getPlatForm());
+            object.put("platformVersion", getPlatVersion());
+            object.put("browser", getBrowser());
+            object.put("browserVersion", getBrowserVersion());
+            object.put("deviceName", getDeviceName());
             object.put("started-at", getTestStartedAt(singleTestObject));
             object.put("finished-at", getTestFinishedAt(singleTestObject));
             object.put("duration-ms", getTestDuration(singleTestObject));
             object.put("name", getTestName(singleTestObject));
             object.put("failureMessage", getFailureMessage(singleTestObject));
             object.put("full-stacktrace", getStackTrace(singleTestObject));
-            object.put("screenshot", getScreenshot(deviceName));
+            object.put("screenshot", getScreenshot());
             object.put("methods", methods);
         }
+        return object;
+    }
+
+    /**
+     * This method will create a separate test from the methods, this will be used when the data provider run the test
+     *
+     * @param testObject
+     * @return
+     */
+    public JSONObject createTestFromMethodObject(Object testObject, JSONArray methods) {
+        JSONObject object = new JSONObject();
+        String singleTestObject = testObject.toString();
+        System.out.println("Single Test Object" + singleTestObject);
+
+        object.put("testID", UUID.randomUUID().toString());
+        object.put("moduleName", getModuleName(singleTestObject));
+        object.put("final-test-status", getTestResultForSingleMethods(methods));
+        object.put("platformName", getPlatForm());
+        object.put("platformVersion", getPlatVersion());
+        object.put("browser", getBrowser());
+        object.put("browserVersion", getBrowserVersion());
+        object.put("deviceName", getDeviceName());
+        object.put("started-at", getTestStartedAt(singleTestObject));
+        object.put("finished-at", getTestFinishedAt(singleTestObject));
+        object.put("duration-ms", getTestDuration(singleTestObject));
+        object.put("name", getTestName(singleTestObject));
+        object.put("failureMessage", getFailureMessage(singleTestObject));
+        object.put("full-stacktrace", getStackTrace(singleTestObject));
+        object.put("screenshot", getScreenshot());
+        object.put("methods", methods);
+
         return object;
     }
 
@@ -161,6 +291,35 @@ public class ReportDataConvertor {
         return folderName;
     }
 
+
+    public String getTestResultForSingleMethods(JSONArray array) {
+
+        String finalTestResult = "SKIPPED";
+        try {
+            net.minidev.json.JSONArray list = JsonPath.parse(array.toString()).read("$.[*].status");
+
+            JSONArray testList = new JSONArray(list.toString());
+
+            finalTestResult = "PASS";
+
+            boolean isFailAvailable = false;
+            for (Object singleMethodResult : testList) {
+
+                if (singleMethodResult.toString().equalsIgnoreCase("FAIL")) {
+                    isFailAvailable = true;
+                }
+
+            }
+
+            if (isFailAvailable) {
+                finalTestResult = "FAIL";
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return finalTestResult;
+
+    }
 
     /**
      * @param object
@@ -188,49 +347,30 @@ public class ReportDataConvertor {
                 finalTestResult = "FAIL";
             }
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
         return finalTestResult;
     }
 
-    public String getPlatForm(String platform) {
-        if(platform == null) {
-            return "Win10";
-        }else{
-            return platform;
-        }
+
+    public String getPlatForm() {
+        return "Win10";
     }
 
-    public String getPlatVersion(String platformVer) {
-        if(platformVer == null) {
-            return "Win1-";
-        }else{
-            return platformVer;
-        }
+    public String getPlatVersion() {
+        return "Win10";
     }
 
-    public String getBrowser(String browser) {
-        if(browser == null) {
-            return "Chrome";
-        }else{
-            return browser;
-        }
+    public String getBrowser() {
+        return "Chrome";
     }
 
-    public String getBrowserVersion(String browserVer) {
-        if(browserVer == null) {
-            return "104";
-        }else{
-            return browserVer;
-        }
+    public String getBrowserVersion() {
+        return "104";
     }
 
-    public String getDeviceName(String deviceName) {
-        if(deviceName == null){
-            return "Android";
-        }else {
-            return deviceName;
-        }
+    public String getDeviceName() {
+        return "Android";
     }
 
     public String getTestStartedAt(String object) {
@@ -328,12 +468,8 @@ public class ReportDataConvertor {
         return fullStackTrace;
     }
 
-    public String getScreenshot(String deviceName) {
-        if(deviceName == null){
-            return "Android";
-        }else {
-            return deviceName;
-        }
+    public String getScreenshot() {
+        return "Android";
     }
 
 
@@ -348,6 +484,32 @@ public class ReportDataConvertor {
                 finalMethod.put(getSingleMethodObject(singleMethodObject));
             }
         } catch (Exception e) {
+
+            System.out.println("Single Test Object" + singleTestObject);
+            LinkedHashMap  list = JsonPath.parse(singleTestObject).read("$.class.test-method");
+
+            try {
+                System.out.println("linked" +list.toString());
+                JSONArray intialMethodList = new JSONArray(list);
+                System.out.println("JSON ARRAY" + intialMethodList);
+
+                for (Object singleMethodObject : intialMethodList) {
+                    finalMethod.put(getSingleMethodObject(singleMethodObject));
+                }
+            }catch (Exception e2)
+            {
+
+                JSONObject intialMethodObject = new JSONObject(list);
+
+                JSONArray intialMethodList = new JSONArray();
+                intialMethodList.put(intialMethodObject);
+
+                for (Object singleMethodObject : intialMethodList) {
+                    finalMethod.put(getSingleMethodObject(singleMethodObject));
+                }
+
+            }
+
 
         }
         return finalMethod;
@@ -364,9 +526,12 @@ public class ReportDataConvertor {
         methodObject.put("duration-ms", getDurationAt(singleMethodObject.toString()));
         methodObject.put("finished-at", getMethodFinished(singleMethodObject.toString()));
         methodObject.put("steps", getSteps(singleMethodObject.toString()));
+        methodObject.put("data-provider", getDataProvider(singleMethodObject.toString()));
+
 
         return methodObject;
     }
+
 
     public JSONArray getSteps(String methodObject) {
         JSONArray stepArray = new JSONArray();
@@ -383,7 +548,7 @@ public class ReportDataConvertor {
 
             }
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
 
         return stepArray;
@@ -401,6 +566,20 @@ public class ReportDataConvertor {
         }
         return bool;
     }
+
+    public boolean getDataProvider(String methodObject) {
+
+        boolean bool = false;
+        try {
+            String isConfig = JsonPath.parse(methodObject).read("$.data-provider");
+            bool = true;
+
+        } catch (Exception e) {
+
+        }
+        return bool;
+    }
+
 
     public String getMethodName(String methodObject) {
 
@@ -427,6 +606,5 @@ public class ReportDataConvertor {
         int methodDurationms = JsonPath.parse(methodObject).read("$.duration-ms");
         return methodDurationms;
     }
-
 
 }
