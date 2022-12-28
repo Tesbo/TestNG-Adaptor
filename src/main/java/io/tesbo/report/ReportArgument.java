@@ -9,14 +9,14 @@ public class ReportArgument {
             description = "Build Key",
             required = true
     )
-    public String buildKey;
+    public static String buildKey;
 
     @Parameter(
             names = {"--Dir", "-d"},
             description = "Test Directory Path ",
             required = true
     )
-    public String testDir;
+    public static String testDir;
 
 
     @Parameter(
@@ -24,35 +24,35 @@ public class ReportArgument {
             description = "Browser Name "
 
     )
-    public String browser;
+    public static String browser;
 
     @Parameter(
             names = {"--BrowserVer", "-bv"},
             description = "Browser Version"
 
     )
-    public String BrowserVersion;
+    public static String BrowserVersion;
 
     @Parameter(
             names = {"--Platform", "-p"},
             description = "Platform Name"
 
     )
-    public String platformName;
+    public static String platformName;
 
     @Parameter(
             names = {"--PlatformVer", "-pv"},
             description = "Platform Version"
 
     )
-    public String platformVer;
+    public static String platformVer;
 
     @Parameter(
             names = {"--DeviceName", "-dn"},
             description = "Device Name "
 
     )
-    public String deviceName;
+    public static String deviceName;
 
 }
 

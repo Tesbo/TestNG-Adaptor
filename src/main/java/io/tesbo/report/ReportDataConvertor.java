@@ -6,7 +6,6 @@ import com.jayway.jsonpath.JsonPath;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.sql.SQLOutput;
 import java.util.LinkedHashMap;
 import java.util.UUID;
 
@@ -138,7 +137,7 @@ public class ReportDataConvertor {
             suite.put("tests", tempTestList);
             suite.put("finished-at", getFinishedAt());
             report.put("Suite", suite);
-
+            System.out.println("final Result" + report);
 
             Boolean result = requestBuilder.updateResult(key, buildKey, report);
 
@@ -279,6 +278,7 @@ public class ReportDataConvertor {
 
     public String getModuleName(String object) {
         String folderName = "default";
+
         try {
 
             String ClassName = JsonPath.parse(object).read("$.class.name");
@@ -286,7 +286,12 @@ public class ReportDataConvertor {
 
             folderName = nameSplitList[nameSplitList.length - 2];
         } catch (Exception e) {
-
+            e.printStackTrace();
+            try {
+                folderName = JsonPath.parse(object).read("$.class.name");
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
         }
         return folderName;
     }
@@ -354,23 +359,23 @@ public class ReportDataConvertor {
 
 
     public String getPlatForm() {
-        return "Win10";
+        return ReportArgument.platformName;
     }
 
     public String getPlatVersion() {
-        return "Win10";
+        return ReportArgument.platformVer;
     }
 
     public String getBrowser() {
-        return "Chrome";
+        return ReportArgument.browser;
     }
 
     public String getBrowserVersion() {
-        return "104";
+        return ReportArgument.BrowserVersion;
     }
 
     public String getDeviceName() {
-        return "Android";
+        return "Mobile";
     }
 
     public String getTestStartedAt(String object) {
@@ -428,7 +433,7 @@ public class ReportDataConvertor {
 
             }
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
 
         return failureMessage;
@@ -486,18 +491,17 @@ public class ReportDataConvertor {
         } catch (Exception e) {
 
             System.out.println("Single Test Object" + singleTestObject);
-            LinkedHashMap  list = JsonPath.parse(singleTestObject).read("$.class.test-method");
+            LinkedHashMap list = JsonPath.parse(singleTestObject).read("$.class.test-method");
 
             try {
-                System.out.println("linked" +list.toString());
+                System.out.println("linked" + list.toString());
                 JSONArray intialMethodList = new JSONArray(list);
                 System.out.println("JSON ARRAY" + intialMethodList);
 
                 for (Object singleMethodObject : intialMethodList) {
                     finalMethod.put(getSingleMethodObject(singleMethodObject));
                 }
-            }catch (Exception e2)
-            {
+            } catch (Exception e2) {
 
                 JSONObject intialMethodObject = new JSONObject(list);
 

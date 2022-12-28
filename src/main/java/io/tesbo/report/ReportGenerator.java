@@ -40,6 +40,9 @@ public class ReportGenerator {
     //Used by StandAlon as Well as Tesbo Framework
     public void generateReportDirectly(String key, String dirPath, String platform, String browser, String browserVer, String platformVer) {
 
+
+
+
         System.out.println(colorize("Hey Let's send your test details to Tesbo World", Attribute.BLUE_TEXT()));
 
         System.out.println(colorize("Please Wait a Moment, We are checking details", Attribute.BLUE_TEXT()));
