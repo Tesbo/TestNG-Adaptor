@@ -4,6 +4,16 @@ import com.beust.jcommander.Parameter;
 
 public class ReportArgument {
 
+
+    @Parameter(
+            names = {"--framework", "-f"},
+            description = "name of test framework"
+
+
+    )
+    public static String framework = "testng";
+
+
     @Parameter(
             names = {"--Key", "-k"},
             description = "Build Key",
@@ -59,7 +69,7 @@ public class ReportArgument {
             description = "Report Mode"
 
     )
-    public static String mode;
+    public static String mode = "single";
 
 
 }

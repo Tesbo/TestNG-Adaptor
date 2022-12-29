@@ -286,7 +286,7 @@ public class ReportDataConvertor {
 
             folderName = nameSplitList[nameSplitList.length - 2];
         } catch (Exception e) {
-            e.printStackTrace();
+
             try {
                 folderName = JsonPath.parse(object).read("$.class.name");
             } catch (Exception e1) {
