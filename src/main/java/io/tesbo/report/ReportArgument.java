@@ -54,5 +54,13 @@ public class ReportArgument {
     )
     public static String deviceName;
 
+    @Parameter(
+            names = {"--mode", "-m"},
+            description = "Report Mode"
+
+    )
+    public static String mode;
+
+
 }
 
