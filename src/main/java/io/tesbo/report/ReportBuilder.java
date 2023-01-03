@@ -1,5 +1,6 @@
 package io.tesbo.report;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.XML;
@@ -60,5 +61,27 @@ public class ReportBuilder {
         return intialReport;
     }
 
+    public JSONArray readJsonFile(String dir) {
+        JSONArray ob = null;
+        try {
+            BufferedReader br = null;
+            FileReader fr = new FileReader(dir + "/Cucumber.json");
+
+            br = new BufferedReader(fr);
+            String sCurrentLine;
+            StringBuffer testResultData = new StringBuffer();
+
+            while ((sCurrentLine = br.readLine()) != null) {
+
+                testResultData.append(sCurrentLine + "\n");
+            }
+
+            ob = new JSONArray(testResultData.toString());
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return ob;
+    }
 
 }

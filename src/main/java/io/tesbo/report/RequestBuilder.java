@@ -1,8 +1,11 @@
 package io.tesbo.report;
 
 import okhttp3.*;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
@@ -36,6 +39,7 @@ public class RequestBuilder {
 
     public Boolean updateResult(String key, String buildId, JSONObject requestBody) {
         Boolean status = null;
+
         OkHttpClient client = new OkHttpClient().newBuilder()
                 .build();
 
@@ -61,7 +65,7 @@ public class RequestBuilder {
 
             JSONObject resultObject = new JSONObject(a);
 
-            System.out.println(resultObject);
+
             status = (Boolean) resultObject.get("is_error");
 
 

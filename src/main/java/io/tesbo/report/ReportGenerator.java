@@ -2,6 +2,7 @@ package io.tesbo.report;
 
 import com.beust.jcommander.JCommander;
 import com.diogonunes.jcolor.Attribute;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import static com.diogonunes.jcolor.Ansi.colorize;
@@ -40,7 +41,6 @@ public class ReportGenerator {
     //Used by StandAlon as Well as Tesbo Framework
     public void generateTestNGReportDirectly(String key, String dirPath, String platform, String browser, String browserVer, String platformVer) {
 
-
         System.out.println(colorize("Hey Let's send your test details to Tesbo World", Attribute.BLUE_TEXT()));
 
         System.out.println(colorize("Please Wait a Moment, We are checking details", Attribute.BLUE_TEXT()));
@@ -61,8 +61,7 @@ public class ReportGenerator {
     }
 
 
-    public void generateCucumberReportDirectly(String key, String dirPath, String platform, String browser, String browserVer, String platformVer)
-    {
+    public void generateCucumberReportDirectly(String key, String dirPath, String platform, String browser, String browserVer, String platformVer) {
         System.out.println(colorize("Hey Let's send your test details to Tesbo World", Attribute.BLUE_TEXT()));
 
         System.out.println(colorize("Please Wait a Moment, We are checking details", Attribute.BLUE_TEXT()));
@@ -70,17 +69,14 @@ public class ReportGenerator {
         System.out.println(colorize("Creating a build", Attribute.BLUE_TEXT()));
         String buildKey = requestBuilder.createBuild(key);
 
+        JSONArray a = builder.readJsonFile(dirPath);
+
+        CucumberDataConvertor dataConvertor = new CucumberDataConvertor(a);
+        dataConvertor.batchModeReport(key, buildKey);
         System.out.println(colorize("Fetching your test report..!!!", Attribute.BLUE_TEXT()));
-
-
-
-
-
 
     }
 
-//single
-    //watcher
 
     public static void main(String[] args) {
         ReportGenerator reportGenerator = new ReportGenerator();
@@ -91,19 +87,7 @@ public class ReportGenerator {
 
             if (reportGenerator.argument.mode.equalsIgnoreCase("watcher")) {
 
-            }else
-            {
-
-            }
-
-
-
-        } else {
-
-            if (reportGenerator.argument.mode.equalsIgnoreCase("watcher")) {
-
-                TestngWatcher testngWatcher = new TestngWatcher();
-
+                CucumberWatcher testngWatcher = new CucumberWatcher();
 
                 System.out.println(colorize("Thank you for the Waking me up, I'm Tesbo Report", Attribute.BLUE_TEXT()));
 
@@ -113,11 +97,32 @@ public class ReportGenerator {
 
                     if (testngWatcher.checkFileChanged(reportGenerator.argument.testDir)) {
                         System.out.println(colorize("ALERT....ALERT....I found a New Change,", Attribute.RED_TEXT()));
-
-                        reportGenerator.generateTestNGReportDirectly(reportGenerator.argument.buildKey, reportGenerator.argument.testDir, reportGenerator.argument.platformName, reportGenerator.argument.browser, reportGenerator.argument.BrowserVersion, reportGenerator.argument.platformVer);
-
+                        reportGenerator.generateCucumberReportDirectly(reportGenerator.argument.buildKey, reportGenerator.argument.testDir, reportGenerator.argument.platformName, reportGenerator.argument.browser, reportGenerator.argument.BrowserVersion, reportGenerator.argument.platformVer);
                         System.out.println(colorize("Back to Business now, Again Watching your report.", Attribute.BLUE_TEXT()));
+                    }
 
+                }
+
+            } else {
+                reportGenerator.generateCucumberReportDirectly(reportGenerator.argument.buildKey, reportGenerator.argument.testDir, reportGenerator.argument.platformName, reportGenerator.argument.browser, reportGenerator.argument.BrowserVersion, reportGenerator.argument.platformVer);
+            }
+
+        } else {
+
+            if (reportGenerator.argument.mode.equalsIgnoreCase("watcher")) {
+
+                TestngWatcher testngWatcher = new TestngWatcher();
+
+                System.out.println(colorize("Thank you for the Waking me up, I'm Tesbo Report", Attribute.BLUE_TEXT()));
+
+                System.out.println(colorize("Now I will Keep Eye on Test Output Dir", Attribute.BLUE_TEXT()));
+
+                while (true) {
+
+                    if (testngWatcher.checkFileChanged(reportGenerator.argument.testDir)) {
+                        System.out.println(colorize("ALERT....ALERT....I found a New Change,", Attribute.RED_TEXT()));
+                        reportGenerator.generateTestNGReportDirectly(reportGenerator.argument.buildKey, reportGenerator.argument.testDir, reportGenerator.argument.platformName, reportGenerator.argument.browser, reportGenerator.argument.BrowserVersion, reportGenerator.argument.platformVer);
+                        System.out.println(colorize("Back to Business now, Again Watching your report.", Attribute.BLUE_TEXT()));
                     }
 
                 }
