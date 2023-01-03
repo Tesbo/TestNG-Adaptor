@@ -474,7 +474,7 @@ public class ReportDataConvertor {
     }
 
     public String getScreenshot() {
-        return "Android";
+        return "";
     }
 
 
