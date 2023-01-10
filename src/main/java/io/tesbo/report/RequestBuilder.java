@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit;
 
 public class RequestBuilder {
 
-    public static String serverURl = "http://report-man.appmatictech.com/";
+    public static String serverURl = "https://reports.tesbo.io/";
 
     public String createBuild(String key) {
         String buildId = "";
@@ -52,8 +52,9 @@ public class RequestBuilder {
 
         MediaType mediaType = MediaType.parse("application/json");
         RequestBody body = RequestBody.create(mediaType, requestBody.toString());
+        System.out.println(serverURl+"v1/build/update/" + buildId);
         Request request = new Request.Builder()
-                .url("http://report-man.appmatictech.com/api/v1/build/update/" + buildId)
+                .url(serverURl+"api/v1/build/update/" + buildId)
                 .method("POST", body)
                 .addHeader("x-identity-key", key)
                 .addHeader("Content-Type", "application/json")
@@ -61,7 +62,7 @@ public class RequestBuilder {
         try {
 
             Response response = client.newCall(request).execute();
-         String a = response.body().string();
+              String a = response.body().string();
 
             JSONObject resultObject = new JSONObject(a);
 
