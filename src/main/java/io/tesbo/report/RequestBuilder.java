@@ -52,7 +52,7 @@ public class RequestBuilder {
 
         MediaType mediaType = MediaType.parse("application/json");
         RequestBody body = RequestBody.create(mediaType, requestBody.toString());
-        System.out.println(serverURl+"v1/build/update/" + buildId);
+
         Request request = new Request.Builder()
                 .url(serverURl+"api/v1/build/update/" + buildId)
                 .method("POST", body)

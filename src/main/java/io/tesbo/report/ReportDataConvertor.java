@@ -89,24 +89,28 @@ public class ReportDataConvertor {
 
         for (int i = 0; i < length; i++) {
 
-            JSONArray methodList = (JSONArray) ((JSONObject) TestList.get(i)).get("methods");
+            try {
+                JSONArray methodList = (JSONArray) ((JSONObject) TestList.get(i)).get("methods");
 
-            for (Object a : methodList) {
+                for (Object a : methodList) {
 
-                JSONObject singleMethod = (JSONObject) a;
-                JSONArray tempArray = new JSONArray();
-                if ((boolean) singleMethod.get("is-config")) {
-                } else {
-                    tempArray.put(singleMethod);
-                    System.out.println("tempArray Method Size " + tempArray.length());
+                    JSONObject singleMethod = (JSONObject) a;
+                    JSONArray tempArray = new JSONArray();
+                    if ((boolean) singleMethod.get("is-config")) {
+                    } else {
+                        tempArray.put(singleMethod);
+                        System.out.println("tempArray Method Size " + tempArray.length());
 
-                    finalTestList.put(createTestFromMethodObject(TestList.get(i), tempArray));
+                        finalTestList.put(createTestFromMethodObject(TestList.get(i), tempArray));
+                    }
+
                 }
+            } catch (org.json.JSONException e) {
 
             }
 
         }
-        System.out.println(finalTestList);
+
 
         System.out.println("TestList Size After" + finalTestList.length());
 
@@ -137,7 +141,7 @@ public class ReportDataConvertor {
             suite.put("tests", tempTestList);
             suite.put("finished-at", getFinishedAt());
             report.put("Suite", suite);
-            System.out.println("final Result" + report);
+
 
             Boolean result = requestBuilder.updateResult(key, buildKey, report);
 
@@ -253,7 +257,7 @@ public class ReportDataConvertor {
     public JSONObject createTestFromMethodObject(Object testObject, JSONArray methods) {
         JSONObject object = new JSONObject();
         String singleTestObject = testObject.toString();
-        System.out.println("Single Test Object" + singleTestObject);
+
 
         object.put("testID", UUID.randomUUID().toString());
         object.put("moduleName", getModuleName(singleTestObject));
@@ -490,32 +494,36 @@ public class ReportDataConvertor {
             }
         } catch (Exception e) {
 
-            System.out.println("Single Test Object" + singleTestObject);
-            LinkedHashMap list = JsonPath.parse(singleTestObject).read("$.class.test-method");
-
             try {
-                System.out.println("linked" + list.toString());
-                JSONArray intialMethodList = new JSONArray(list);
-                System.out.println("JSON ARRAY" + intialMethodList);
 
-                for (Object singleMethodObject : intialMethodList) {
-                    finalMethod.put(getSingleMethodObject(singleMethodObject));
+                LinkedHashMap list = JsonPath.parse(singleTestObject).read("$.class.test-method");
+
+                try {
+                    JSONArray intialMethodList = new JSONArray(list);
+
+                    for (Object singleMethodObject : intialMethodList) {
+                        finalMethod.put(getSingleMethodObject(singleMethodObject));
+                    }
+                } catch (Exception e2) {
+
+                    JSONObject intialMethodObject = new JSONObject(list);
+
+                    JSONArray intialMethodList = new JSONArray();
+                    intialMethodList.put(intialMethodObject);
+
+                    for (Object singleMethodObject : intialMethodList) {
+                        finalMethod.put(getSingleMethodObject(singleMethodObject));
+                    }
+
                 }
-            } catch (Exception e2) {
 
-                JSONObject intialMethodObject = new JSONObject(list);
 
-                JSONArray intialMethodList = new JSONArray();
-                intialMethodList.put(intialMethodObject);
-
-                for (Object singleMethodObject : intialMethodList) {
-                    finalMethod.put(getSingleMethodObject(singleMethodObject));
-                }
+            } catch (Exception methodnotAvailable) {
 
             }
 
-
         }
+
         return finalMethod;
     }
 
@@ -540,7 +548,11 @@ public class ReportDataConvertor {
     public JSONArray getSteps(String methodObject) {
         JSONArray stepArray = new JSONArray();
         try {
+
+
             net.minidev.json.JSONArray list = JsonPath.parse(methodObject).read("$.reporter-output.line");
+
+
             JSONArray intialStepList = new JSONArray(list.toString());
 
             for (Object singleSteps : intialStepList) {
@@ -552,7 +564,11 @@ public class ReportDataConvertor {
 
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            JSONObject step = new JSONObject();
+            step.put("step", "");
+            step.put("status", "PASS");
+            stepArray.put(step);
+
         }
 
         return stepArray;
