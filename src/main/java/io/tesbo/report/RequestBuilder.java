@@ -40,6 +40,7 @@ public class RequestBuilder {
     public Boolean updateResult(String key, String buildId, JSONObject requestBody) {
         Boolean status = null;
 
+        System.out.println("request body" + requestBody);
         OkHttpClient client = new OkHttpClient().newBuilder()
                 .build();
 

@@ -52,6 +52,8 @@ public class ReportBuilder {
         try {
 
             JSONObject jsonObj = XML.toJSONObject(xmlData);
+
+            System.out.println(jsonObj);
             String json = jsonObj.toString(INDENTATION);
             intialReport = new JSONObject(json);
 
