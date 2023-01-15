@@ -34,7 +34,7 @@ public class AdaptorTest {
     {
         Reporter.log("Passed Parameter Is ");
         Reporter.log("Passed Parameter Is ");
-        System.out.println("before");
+
     }
 
     @Test(dataProvider = "data-provider")

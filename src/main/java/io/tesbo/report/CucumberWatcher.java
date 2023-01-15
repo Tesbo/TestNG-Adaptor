@@ -17,7 +17,7 @@ public class CucumberWatcher {
                 for (WatchEvent<?> event : wk.pollEvents()) {
 
                     final Path changed = (Path) event.context();
-                    //System.out.println(changed);
+
                     if (changed.endsWith("Cucumber.json")) {
 
                         bool = true;

@@ -27,9 +27,8 @@ public class ReportBuilder {
                 testResultData.append(sCurrentLine + "\n");
             }
         } catch (Exception e) {
-            System.out.println(e.getMessage());
 
-            e.printStackTrace();
+
         } finally {
 
             try {
@@ -53,7 +52,6 @@ public class ReportBuilder {
 
             JSONObject jsonObj = XML.toJSONObject(xmlData);
 
-            System.out.println(jsonObj);
             String json = jsonObj.toString(INDENTATION);
             intialReport = new JSONObject(json);
 

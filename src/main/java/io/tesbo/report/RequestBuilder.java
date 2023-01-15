@@ -1,11 +1,8 @@
 package io.tesbo.report;
 
 import okhttp3.*;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
@@ -40,7 +37,6 @@ public class RequestBuilder {
     public Boolean updateResult(String key, String buildId, JSONObject requestBody) {
         Boolean status = null;
 
-        System.out.println("request body" + requestBody);
         OkHttpClient client = new OkHttpClient().newBuilder()
                 .build();
 
@@ -55,7 +51,7 @@ public class RequestBuilder {
         RequestBody body = RequestBody.create(mediaType, requestBody.toString());
 
         Request request = new Request.Builder()
-                .url(serverURl+"api/v1/build/update/" + buildId)
+                .url(serverURl + "api/v1/build/update/" + buildId)
                 .method("POST", body)
                 .addHeader("x-identity-key", key)
                 .addHeader("Content-Type", "application/json")
@@ -63,7 +59,7 @@ public class RequestBuilder {
         try {
 
             Response response = client.newCall(request).execute();
-              String a = response.body().string();
+            String a = response.body().string();
 
             JSONObject resultObject = new JSONObject(a);
 

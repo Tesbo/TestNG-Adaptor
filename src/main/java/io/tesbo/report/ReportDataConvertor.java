@@ -37,12 +37,12 @@ public class ReportDataConvertor {
     public void batchModeReport(String key, String buildKey) {
 
         JSONArray TestList = getAvailableTestList();
-        System.out.println("TestList Size Before" + TestList.length());
         /*
          * Getting the list of the methods from the test
          * */
 
         int length = TestList.length();
+        System.out.println("TestLength" + length);
         JSONArray finalTestList = new JSONArray();
 
         for (int i = 0; i < length; i++) {
@@ -56,7 +56,6 @@ public class ReportDataConvertor {
                     if ((boolean) singleMethod.get("is-config")) {
                     } else {
                         tempArray.put(singleMethod);
-                        System.out.println("tempArray Method Size " + tempArray.length());
                         finalTestList.put(createTestFromMethodObject(TestList.get(i), tempArray));
                     }
 
@@ -68,16 +67,17 @@ public class ReportDataConvertor {
         }
 
 
-        System.out.println("TestList Size After" + finalTestList.length());
 
 
         RequestBuilder requestBuilder = new RequestBuilder();
 
-        System.out.println(colorize("Total " + finalTestList.length() + " Test Found", Attribute.BLUE_TEXT()));
 
-        System.out.println(colorize("Sending them to our heaven", Attribute.BLUE_TEXT()));
+        System.out.println(finalTestList.length());
 
-        for (int i = 0; i < finalTestList.length(); i++) {
+
+
+
+        for (int i = 424; i < finalTestList.length(); i++) {
             System.out.print(colorize(".", Attribute.MAGENTA_TEXT(), Attribute.BLUE_BACK()));
             if (i % 60 == 0) {
                 System.out.println("");
@@ -179,7 +179,6 @@ public class ReportDataConvertor {
     }
 
     public JSONObject getSingleTestObject(Object testObject) {
-        System.out.println("inside single Test object");
 
         JSONObject object = new JSONObject();
         String singleTestObject = testObject.toString();
@@ -203,7 +202,6 @@ public class ReportDataConvertor {
             object.put("screenshot", getScreenshot());
             object.put("methods", methods);
         }
-        System.out.println("Final Test object" + object);
         return object;
     }
 
@@ -214,9 +212,6 @@ public class ReportDataConvertor {
      * @return
      */
     public JSONObject createTestFromMethodObject(Object testObject, JSONArray methods) {
-
-        System.out.println("testObject" + testObject);
-        System.out.println("methods" + methods);
 
 
         JSONObject object = new JSONObject();
@@ -408,7 +403,6 @@ public class ReportDataConvertor {
     }
 
     public String getStacktraceForTestObject(String testObject) {
-        System.out.println("Test Object..................." + testObject);
         String fullStackTrace = "Failed to get Stack Trace";
 
         try {
@@ -421,7 +415,6 @@ public class ReportDataConvertor {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.println("stack tracke " + fullStackTrace);
         return fullStackTrace;
     }
 

@@ -18,7 +18,7 @@ public class TestngWatcher {
                 for (WatchEvent<?> event : wk.pollEvents()) {
 
                     final Path changed = (Path) event.context();
-                    //System.out.println(changed);
+
                     if (changed.endsWith("testng-results.xml")) {
 
                         bool = true;

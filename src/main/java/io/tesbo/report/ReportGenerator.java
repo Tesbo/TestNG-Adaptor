@@ -55,7 +55,6 @@ public class ReportGenerator {
         System.out.println(colorize("Now Understanding it's meaning...", Attribute.BLUE_TEXT()));
         ReportDataConvertor convertor = new ReportDataConvertor(a);
         convertor.batchModeReport(key, buildKey);
-        System.out.println();
         System.out.println(colorize("Hureeeee!!!!.....All your Test Are Reached to it's Destination", Attribute.BLUE_TEXT()));
 
     }

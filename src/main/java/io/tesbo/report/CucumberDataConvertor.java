@@ -17,10 +17,6 @@ public class CucumberDataConvertor {
 
     JSONArray reportData;
 
-//    CucumberDataConverter(JSONArray reportData) {
-//        this.reportData = reportData;
-//    }
-
     public CucumberDataConvertor(JSONArray a) {
         this.reportData = a;
     }
