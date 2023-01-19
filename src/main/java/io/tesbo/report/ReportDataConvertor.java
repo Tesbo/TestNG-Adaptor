@@ -77,7 +77,7 @@ public class ReportDataConvertor {
 
 
 
-        for (int i = 424; i < finalTestList.length(); i++) {
+        for (int i = 0; i < finalTestList.length(); i++) {
             System.out.print(colorize(".", Attribute.MAGENTA_TEXT(), Attribute.BLUE_BACK()));
             if (i % 60 == 0) {
                 System.out.println("");
