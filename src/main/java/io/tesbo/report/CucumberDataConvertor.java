@@ -57,7 +57,7 @@ public class CucumberDataConvertor {
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+
             }
 
             if (!result) {
@@ -189,7 +189,7 @@ public class CucumberDataConvertor {
                 finalTestResult = "FAIL";
             }
         } catch (Exception e) {
-            e.printStackTrace();
+
         }
         return finalTestResult;
     }
@@ -226,7 +226,7 @@ public class CucumberDataConvertor {
                 totalDuration = totalDuration + singleStepTime;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+
         }
 
         long durationInMs = TimeUnit.NANOSECONDS.toMillis(totalDuration);
@@ -253,7 +253,7 @@ public class CucumberDataConvertor {
 
             }
         } catch (Exception e) {
-            e.printStackTrace();
+
         }
 
         return fullStackTrace;
@@ -305,7 +305,7 @@ public class CucumberDataConvertor {
 
             }
         } catch (Exception e) {
-            e.printStackTrace();
+
         }
 
         return stepArray;
@@ -328,7 +328,7 @@ public class CucumberDataConvertor {
 
             }
         } catch (Exception e) {
-            e.printStackTrace();
+
         }
 
         if (bool) {

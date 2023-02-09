@@ -3,6 +3,7 @@ package io.tesbo.report;
 import okhttp3.*;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
@@ -28,7 +29,7 @@ public class RequestBuilder {
             JSONObject object = new JSONObject(response.body().string());
             buildId = ((JSONObject) (object.get("data"))).get("build_id").toString();
         } catch (IOException e) {
-            e.printStackTrace();
+
         }
 
         return buildId;
@@ -68,11 +69,35 @@ public class RequestBuilder {
 
 
         } catch (IOException e) {
-            e.printStackTrace();
+
         }
 
         return status;
     }
 
+
+/*
+
+    public void uploadScreenShot(String filePath)  {
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        MediaType mediaType = MediaType.parse("text/plain");
+        RequestBody body = new MultipartBody.Builder().setType(MultipartBody.FORM)
+                .addFormDataPart("image","hunger-g6dbe9dfae_1920.jpg",
+                        RequestBody.create(MediaType.parse("application/octet-stream"),
+                                new File("/Users/viralpatel/Downloads/hunger-g6dbe9dfae_1920.jpg")))
+                .build();
+        Request request = new Request.Builder()
+                .url("http://report-man.appmatictech.com/api/v1/upload-image")
+                .method("POST", body)
+                .addHeader("x-identity-key", "LzZ4EkXbcjUYggnZ81bRxBLXNe4tPzAC")
+                .build();
+        try {
+            Response response = client.newCall(request).execute();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+*/
 
 }

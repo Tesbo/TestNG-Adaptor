@@ -1,3 +1,6 @@
+import io.github.bonigarcia.wdm.WebDriverManager;
+import io.tesbo.report.reportUtility.ReportUtility;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.Reporter;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -46,8 +49,16 @@ public class AdaptorTest {
 
     @Test
     public void ABCD() {
+
+        WebDriverManager.chromedriver().setup();
+
+       /* ChromeDriver driver = new ChromeDriver();
+
+        driver.get("https://google.com");
+
+        Reporter.log(ReportUtility.captureScreenshot(driver));*/
         Reporter.log("ANCD Parameter Is : ");
-        Reporter.log("NSFKFL Parameter Is :" );
+
         Reporter.log("NSFKFL Parameter Is :" );
         Reporter.log("NSFKFL Parameter Is :" );
         Reporter.log("NSFKFL Parameter Is :" );

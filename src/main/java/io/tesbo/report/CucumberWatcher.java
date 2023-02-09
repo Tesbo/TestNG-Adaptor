@@ -31,9 +31,9 @@ public class CucumberWatcher {
 
             }
         } catch (InterruptedException e) {
-            e.printStackTrace();
+
         } catch (IOException e) {
-            e.printStackTrace();
+
 
         }
         return bool;

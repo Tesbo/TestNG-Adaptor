@@ -283,7 +283,7 @@ public class ReportDataConvertor {
                 finalTestResult = "FAIL";
             }
         } catch (Exception e) {
-            e.printStackTrace();
+
         }
         return finalTestResult;
 
@@ -315,7 +315,7 @@ public class ReportDataConvertor {
                 finalTestResult = "FAIL";
             }
         } catch (Exception e) {
-            e.printStackTrace();
+
         }
         return finalTestResult;
     }
@@ -396,7 +396,7 @@ public class ReportDataConvertor {
 
             }
         } catch (Exception e) {
-            e.printStackTrace();
+
         }
 
         return failureMessage;
@@ -413,7 +413,7 @@ public class ReportDataConvertor {
                 fullStackTrace = (String) a.get(0);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+
         }
         return fullStackTrace;
     }
@@ -448,7 +448,7 @@ public class ReportDataConvertor {
                                 break;
                             }
                         } catch (Exception e) {
-                            e.printStackTrace();
+
                             fullStackTrace = JsonPath.parse(singleMethodResult.toString()).read("$.full-stacktrace");
                             if (!fullStackTrace.equalsIgnoreCase("Failed to get Stack Trace")) {
                                 break;
@@ -468,7 +468,7 @@ public class ReportDataConvertor {
                     e2.printStackTrace();
 
                 }
-                e.printStackTrace();
+
             }
         }
         return fullStackTrace;
@@ -516,7 +516,7 @@ public class ReportDataConvertor {
 
 
             } catch (Exception methodnotAvailable) {
-                methodnotAvailable.printStackTrace();
+
             }
 
         }
