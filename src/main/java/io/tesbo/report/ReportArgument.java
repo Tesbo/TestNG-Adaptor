@@ -13,6 +13,14 @@ public class ReportArgument {
     )
     public static String framework = "testng";
 
+    @Parameter(
+            names = {"--env", "-e"},
+            description = "name of environment"
+
+
+    )
+    public static String env = "";
+
 
     @Parameter(
             names = {"--Key", "-k"},

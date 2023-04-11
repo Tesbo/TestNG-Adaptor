@@ -1,6 +1,7 @@
 import io.github.bonigarcia.wdm.WebDriverManager;
 import io.tesbo.report.reportUtility.ReportUtility;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.testng.Assert;
 import org.testng.Reporter;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -45,7 +46,12 @@ public class AdaptorTest {
         Reporter.log("Passed Parameter Is : " + val);
         Reporter.log("Passed Parameter Is : " + val);
     }
-
+/*
+    @Test
+    public void ABCDFailed() {
+        Assert.assertTrue(false);
+    }
+*/
 
     @Test
     public void ABCD() {

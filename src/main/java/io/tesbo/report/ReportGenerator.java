@@ -82,6 +82,9 @@ public class ReportGenerator {
         reportGenerator.jc.parse(args);
 
 
+        RequestBuilder builder1 = new RequestBuilder();
+        builder1.getURL(reportGenerator.argument.env);
+
         if (reportGenerator.argument.framework.equalsIgnoreCase("cucumber")) {
 
             if (reportGenerator.argument.mode.equalsIgnoreCase("watcher")) {

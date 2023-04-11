@@ -67,15 +67,10 @@ public class ReportDataConvertor {
         }
 
 
-
-
         RequestBuilder requestBuilder = new RequestBuilder();
 
 
         System.out.println(finalTestList.length());
-
-
-
 
         for (int i = 0; i < finalTestList.length(); i++) {
             System.out.print(colorize(".", Attribute.MAGENTA_TEXT(), Attribute.BLUE_BACK()));
@@ -108,10 +103,9 @@ public class ReportDataConvertor {
         }
 
 
-        //calculate Batch Size(How Many Batch)
-        //Prepare the single batch
-        //Send Them to server
-
+        //close the build
+        System.out.println("Closing the build");
+        requestBuilder.closeBuild(key, buildKey);
 
     }
 
@@ -230,7 +224,7 @@ public class ReportDataConvertor {
         object.put("name", getTestName(singleTestObject));
         object.put("failureMessage", getFailureMessage(singleTestObject));
 
-        object.put("full-stacktrace", getStackTrace(singleTestObject,"singleTest"));
+        object.put("full-stacktrace", getStackTrace(singleTestObject, "singleTest"));
 
         object.put("screenshot", getScreenshot());
         object.put("methods", methods);
@@ -424,14 +418,9 @@ public class ReportDataConvertor {
         if (from.equalsIgnoreCase("singleMethods")) {
             fullStackTrace = JsonPath.parse(testObject.toString()).read("$.exception.full-stacktrace");
 
-        }else if(from.equalsIgnoreCase("singleTest"))
-        {
+        } else if (from.equalsIgnoreCase("singleTest")) {
             fullStackTrace = JsonPath.parse(testObject.toString()).read("$.full-stacktrace");
-        }
-
-
-
-        else {
+        } else {
 
 
             try {
@@ -465,7 +454,7 @@ public class ReportDataConvertor {
                     JSONArray a = new JSONArray(stack.toString());
                     fullStackTrace = (String) a.get(0);
                 } catch (Exception e2) {
-                    e2.printStackTrace();
+
 
                 }
 

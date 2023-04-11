@@ -9,7 +9,21 @@ import java.util.concurrent.TimeUnit;
 
 public class RequestBuilder {
 
-    public static String serverURl = "https://reports.tesbo.io/";
+     public static String serverURl = "";
+
+
+
+    public void getURL(String env)
+    {
+        if(env.equals("test"))
+        {
+             serverURl = "http://report-man.appmatictech.com/";
+        }else {
+            serverURl = "https://reports.tesbo.io/";
+        }
+
+    }
+
 
     public String createBuild(String key) {
         String buildId = "";
@@ -76,9 +90,36 @@ public class RequestBuilder {
     }
 
 
+    public void closeBuild(String key, String buildId) {
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        MediaType mediaType = MediaType.parse("text/plain");
+        RequestBody body = RequestBody.create(mediaType, "");
+        Request request = new Request.Builder()
+                .url(serverURl+"api/v1/build/close/"+buildId)
+                .method("POST", body)
+                .addHeader("x-identity-key", key)
+                .build();
+        try {
+            Response response = client.newCall(request).execute();
+            String a = response.body().string();
+            System.out.println(a);
+            JSONObject resultObject = new JSONObject(a);
+
+
+            System.out.println((Boolean) resultObject.get("is_error"));
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+
+
 /*
 
-    public void uploadScreenShot(String filePath)  {
+    public void uploadScreenShot(String key, String buildId, String filePath)  {
         OkHttpClient client = new OkHttpClient().newBuilder()
                 .build();
         MediaType mediaType = MediaType.parse("text/plain");
@@ -99,5 +140,6 @@ public class RequestBuilder {
         }
     }
 */
+
 
 }
