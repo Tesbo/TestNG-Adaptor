@@ -7,81 +7,51 @@ import org.json.XML;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public class ReportBuilder {
-
-
     public static int INDENTATION = 4;
 
     public String readXmlFile(String dir) {
-
-        BufferedReader br = null;
-        FileReader fr = null;
-        StringBuffer testResultData = new StringBuffer();
-
-        try {
-            fr = new FileReader(dir + "/testng-results.xml");
-            br = new BufferedReader(fr);
+        StringBuilder testResultData = new StringBuilder();
+        try (BufferedReader br = Files.newBufferedReader(Paths.get(dir, "testng-results.xml"))) {
             String sCurrentLine;
             while ((sCurrentLine = br.readLine()) != null) {
-                testResultData.append(sCurrentLine + "\n");
+                testResultData.append(sCurrentLine).append("\n");
             }
-        } catch (Exception e) {
-
-
-        } finally {
-
-            try {
-                if (br != null)
-                    br.close();
-                if (fr != null)
-                    fr.close();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
-        return String.valueOf(testResultData);
+        return testResultData.toString();
     }
 
-
     public JSONObject convertXmlToJSON(String xmlData) {
-        JSONObject intialReport = null;
-
+        JSONObject initialReport = null;
         try {
-
             JSONObject jsonObj = XML.toJSONObject(xmlData);
-
             String json = jsonObj.toString(INDENTATION);
-            intialReport = new JSONObject(json);
-
+            initialReport = new JSONObject(json);
         } catch (JSONException ex) {
             ex.printStackTrace();
         }
-        return intialReport;
+        return initialReport;
     }
 
     public JSONArray readJsonFile(String dir) {
         JSONArray ob = null;
-        try {
-            BufferedReader br = null;
-            FileReader fr = new FileReader(dir + "/Cucumber.json");
-
-            br = new BufferedReader(fr);
+        StringBuilder testResultData = new StringBuilder();
+        try (BufferedReader br = Files.newBufferedReader(Paths.get(dir, "Cucumber.json"))) {
             String sCurrentLine;
-            StringBuffer testResultData = new StringBuffer();
-
             while ((sCurrentLine = br.readLine()) != null) {
-
-                testResultData.append(sCurrentLine + "\n");
+                testResultData.append(sCurrentLine).append("\n");
             }
-
             ob = new JSONArray(testResultData.toString());
-
-        } catch (Exception ex) {
+        } catch (IOException | JSONException ex) {
             ex.printStackTrace();
         }
         return ob;
     }
-
 }

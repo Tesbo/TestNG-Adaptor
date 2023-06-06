@@ -9,19 +9,16 @@ import java.util.concurrent.TimeUnit;
 
 public class RequestBuilder {
 
-     public static String serverURl = "";
-
-
+    public static String serverURl = "https://reports.tesbo.io/";
 
     public void getURL(String env)
     {
         if(env.equals("test"))
         {
-             serverURl = "http://report-man.appmatictech.com/";
+            serverURl = "http://report-man.appmatictech.com/";
         }else {
             serverURl = "https://reports.tesbo.io/";
         }
-
     }
 
 
