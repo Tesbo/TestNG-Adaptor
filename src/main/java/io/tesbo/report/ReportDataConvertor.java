@@ -42,7 +42,7 @@ public class ReportDataConvertor {
          * */
 
         int length = TestList.length();
-        System.out.println("TestLength" + length);
+
         JSONArray finalTestList = new JSONArray();
 
         for (int i = 0; i < length; i++) {
@@ -61,7 +61,7 @@ public class ReportDataConvertor {
 
                 }
             } catch (org.json.JSONException e) {
-                e.printStackTrace();
+
             }
 
         }
@@ -70,7 +70,7 @@ public class ReportDataConvertor {
         RequestBuilder requestBuilder = new RequestBuilder();
 
 
-        System.out.println(finalTestList.length());
+
 
         for (int i = 0; i < finalTestList.length(); i++) {
             System.out.print(colorize(".", Attribute.MAGENTA_TEXT(), Attribute.BLUE_BACK()));
@@ -247,7 +247,7 @@ public class ReportDataConvertor {
             try {
                 folderName = JsonPath.parse(object).read("$.class.name");
             } catch (Exception e1) {
-                e1.printStackTrace();
+
             }
         }
         return folderName;
@@ -528,7 +528,7 @@ public class ReportDataConvertor {
             methodObject.put("data-provider", getDataProvider(singleMethodObject.toString()));
             methodObject.put("full-stacktrace", getStackTrace(singleMethodObject.toString(), "singleMethods"));
         } catch (Exception singleMethodObject1) {
-            singleMethodObject1.printStackTrace();
+
         }
 
         return methodObject;

@@ -22,7 +22,7 @@ public class ReportBuilder {
                 testResultData.append(sCurrentLine).append("\n");
             }
         } catch (IOException e) {
-            e.printStackTrace();
+
         }
 
         return testResultData.toString();
@@ -35,7 +35,7 @@ public class ReportBuilder {
             String json = jsonObj.toString(INDENTATION);
             initialReport = new JSONObject(json);
         } catch (JSONException ex) {
-            ex.printStackTrace();
+
         }
         return initialReport;
     }
@@ -50,7 +50,7 @@ public class ReportBuilder {
             }
             ob = new JSONArray(testResultData.toString());
         } catch (IOException | JSONException ex) {
-            ex.printStackTrace();
+
         }
         return ob;
     }
