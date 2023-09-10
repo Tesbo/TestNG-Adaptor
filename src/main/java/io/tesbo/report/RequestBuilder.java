@@ -11,12 +11,10 @@ public class RequestBuilder {
 
     public static String serverURl = "https://reports.tesbo.io/";
 
-    public void getURL(String env)
-    {
-        if(env.equals("test"))
-        {
+    public void getURL(String env) {
+        if (env.equals("test")) {
             serverURl = "http://report-man.appmatictech.com/";
-        }else {
+        } else {
             serverURl = "https://reports.tesbo.io/";
         }
     }
@@ -47,6 +45,12 @@ public class RequestBuilder {
     }
 
     public Boolean updateResult(String key, String buildId, JSONObject requestBody) {
+
+        System.out.println("Key : " + key);
+        System.out.println("buildId : " + buildId);
+        System.out.println("requestBody : " + requestBody);
+
+
         Boolean status = null;
 
         OkHttpClient client = new OkHttpClient().newBuilder()
@@ -73,6 +77,8 @@ public class RequestBuilder {
             Response response = client.newCall(request).execute();
             String a = response.body().string();
 
+
+            System.out.println(a);
             JSONObject resultObject = new JSONObject(a);
 
 
@@ -93,7 +99,7 @@ public class RequestBuilder {
         MediaType mediaType = MediaType.parse("text/plain");
         RequestBody body = RequestBody.create(mediaType, "");
         Request request = new Request.Builder()
-                .url(serverURl+"api/v1/build/close/"+buildId)
+                .url(serverURl + "api/v1/build/close/" + buildId)
                 .method("POST", body)
                 .addHeader("x-identity-key", key)
                 .build();
@@ -112,21 +118,17 @@ public class RequestBuilder {
     }
 
 
-
-
-/*
-
-    public void uploadScreenShot(String key, String buildId, String filePath)  {
+    public void uploadScreenShot(String key, String buildId, String filePath) {
         OkHttpClient client = new OkHttpClient().newBuilder()
                 .build();
         MediaType mediaType = MediaType.parse("text/plain");
         RequestBody body = new MultipartBody.Builder().setType(MultipartBody.FORM)
-                .addFormDataPart("image","hunger-g6dbe9dfae_1920.jpg",
+                .addFormDataPart("image", "hunger-g6dbe9dfae_1920.jpg",
                         RequestBody.create(MediaType.parse("application/octet-stream"),
-                                new File("/Users/viralpatel/Downloads/hunger-g6dbe9dfae_1920.jpg")))
+                                new File(filePath)))
                 .build();
         Request request = new Request.Builder()
-                .url("http://report-man.appmatictech.com/api/v1/upload-image")
+                .url(serverURl + "/api/v1/upload-image")
                 .method("POST", body)
                 .addHeader("x-identity-key", "LzZ4EkXbcjUYggnZ81bRxBLXNe4tPzAC")
                 .build();
@@ -136,7 +138,6 @@ public class RequestBuilder {
             throw new RuntimeException(e);
         }
     }
-*/
 
 
 }
