@@ -3,13 +3,7 @@ package io.tesbo.selfadaptor;
 import io.tesbo.report.RequestBuilder;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.io.FileHandler;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.UUID;
 
 import static com.google.common.base.Throwables.getStackTraceAsString;
